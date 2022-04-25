@@ -1,0 +1,3 @@
+[submodule "include/MagSampleFetcher_cpp"]
+	path = include/MagSampleFetcher_cpp
+	url = https://github.com/frnyb/MagSampleFetcher_cpp.git
