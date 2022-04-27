@@ -57,7 +57,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	auto start_time = std::chrono::steady_clock::now();
 
-	while(!msf->Start()) {
+	while(!msf->Start(2)) {
 
 		sleep_rate.sleep();
 
