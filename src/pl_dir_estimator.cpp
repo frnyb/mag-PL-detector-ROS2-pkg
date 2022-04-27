@@ -102,7 +102,11 @@ void PowerlineDirectionEstimatorNode::odometryCallback() {
 
 	updateFromOdometry();
 
-    publishPowerlineDirection();
+	direction_mutex_.lock(); {
+
+		publishPowerlineDirection(pl_direction_);
+
+	} direction_mutex_.unlock();
 
 }
 
@@ -335,7 +339,13 @@ float PowerlineDirectionEstimatorNode::mapAngle(float curr_angle, float new_angl
 
 }
 
-void PowerlineDirectionEstimatorNode::publishPowerlineDirection() {
+void PowerlineDirectionEstimatorNode::publishPowerlineDirection(quat_t q) {
+
+}
+
+void PowerlineDirectionEstimatorNode::publishMagPowerlineDirection(quat_t q) {
+
+
 
 }
 

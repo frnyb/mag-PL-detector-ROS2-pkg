@@ -64,6 +64,8 @@ private:
 	quat_t drone_quat_;
 	quat_t last_drone_quat_;
 
+	geometry_msgs::msg::
+
     float q_, r_odom_, r_mag_vec_;
 
 	float parallel_dot_prod_thresh_;
@@ -91,7 +93,8 @@ private:
     float mapAngle(float curr_angle, float new_angle);
     float backmapAngle(float angle);
 
-	void publishPowerlineDirection();
+	void publishPowerlineDirection(quat_t q);
+	void publishMagPowerlineDirection(quat_t q);
 
     void odometryCallback();
 
