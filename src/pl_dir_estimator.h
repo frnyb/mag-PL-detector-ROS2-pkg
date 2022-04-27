@@ -11,6 +11,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3_stamped.hpp>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
 #include <tf2/exceptions.h>
@@ -63,6 +65,11 @@ private:
 
 	quat_t drone_quat_;
 	quat_t last_drone_quat_;
+
+	geometry_msgs::msg::TransformStamped drone_T_mag0;
+	geometry_msgs::msg::TransformStamped drone_T_mag1;
+	geometry_msgs::msg::TransformStamped drone_T_mag2;
+	geometry_msgs::msg::TransformStamped drone_T_mag3;
 
     float q_, r_odom_, r_mag_vec_;
 

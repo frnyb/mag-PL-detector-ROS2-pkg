@@ -26,6 +26,28 @@ PowerlineDirectionEstimatorNode::PowerlineDirectionEstimatorNode(const std::stri
 	this->declare_parameter<float>("vector_parallel_dot_prod_thresh", 0.95);
 	this->get_parameter("vector_parallel_dot_prod_thresh", parallel_dot_prod_thresh_);
 
+	geometry_msgs::msg::TransformStamped mag0_tf;
+	geometry_msgs::msg::TransformStamped mag1_tf;
+	geometry_msgs::msg::TransformStamped mag2_tf;
+	geometry_msgs::msg::TransformStamped mag3_tf;
+
+	while(true) {
+
+		try {
+			mag0_tf = tf_buffer_->lookupTransform("drone", "mag0", tf2::TimePointZero);
+			RCLCPP_INFO(this->get_logger(), "Found mag0 transform, frame drone to mag0");
+
+			mag1_tf = tf_buffer_->lookupTransform("drone", "mag1", tf2::TimePointZero);
+			RCLCPP_INFO(this->get_logger(), "Found mag1 transform, frame drone to mag0");
+
+			mag2_tf = tf_buffer_->lookupTransform("drone", "mag2", tf2::TimePointZero);
+			RCLCPP_INFO(this->get_logger(), "Found mag2 transform, frame drone to mag0");
+
+			mag3_tf = tf_buffer_->lookupTransform("drone", "mag3", tf2::TimePointZero);
+			RCLCPP_INFO(this->get_logger(), "Found mag3 transform, frame drone to mag0");
+		}
+	}
+
 	if (fixed_phase_) {
 
 		mag0_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
@@ -336,6 +358,8 @@ float PowerlineDirectionEstimatorNode::mapAngle(float curr_angle, float new_angl
 }
 
 void PowerlineDirectionEstimatorNode::publishPowerlineDirection() {
+
+	
 
 }
 
