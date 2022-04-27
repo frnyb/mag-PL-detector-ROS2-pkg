@@ -89,17 +89,6 @@ void MagSamplePublisherNode::publishSamples() {
 
 	}
 
-	for (int i = 0; i < mag_samples_window_.size(); i++) {
-		for (int j = 0; j < mag_samples_window_[i].size(); j++) {
-			for (int k = 0; k < 12; k++) {
-				std::cout << mag_samples_window_[i][j][k].data << "\t";
-			}
-			std::cout << std::endl;
-		}
-	}
-
-	return;
-
 	//mag_pl_detector::msg::MagMeasurements mag_measurements_msg = vecToMsg(samples);
 
 	mag_pl_detector::msg::MagMeasurements mag_measurements_msg = windowToMsg();
