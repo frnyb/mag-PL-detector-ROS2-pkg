@@ -30,8 +30,8 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	msf->GetSamples(1);
 
-	fetch_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
-	publish_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
+	fetch_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	publish_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
 
@@ -41,11 +41,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	mag_samples_window_.push_back(samples);
 
-	if (mag_samples_window_.size() < n_periods_) {
-
-		return;
-
-	} else if (mag_samples_window_.size() > n_periods_) {
+	if (mag_samples_window_.size() > n_periods_) {
 
 		mag_samples_window_.erase(mag_samples_window_.begin());
 
@@ -53,6 +49,12 @@ void MagSamplePublisherNode::fetchSamples() {
 }
 
 void MagSamplePublisherNode::publishSamples() {
+
+	if (mag_samples_window_.size() < n_periods_) {
+
+		return;
+
+	}
 
 	//mag_pl_detector::msg::MagMeasurements mag_measurements_msg = vecToMsg(samples);
 
