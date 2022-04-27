@@ -8,7 +8,7 @@
  *********************************************************************************/
 
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
-				: rclcpp::Node(node_name, node_namespace), sleep_rate(5000000) {
+				: rclcpp::Node(node_name, node_namespace), sleep_rate(10000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
 	this->declare_parameter<int>("bram_size", 8192);
@@ -36,7 +36,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	first_run_ = true;
 
-	fetch_samples_timer_ = this->create_wall_timer(2ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	fetch_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
 	//publish_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
@@ -55,15 +55,15 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//}
 
-	auto start_time = std::chrono::steady_clock::now();
+	//auto start_time = std::chrono::steady_clock::now();
 
-	while(!msf->Start(2)) {
+	while(!msf->Start(n_periods_)) {
 
 		sleep_rate.sleep();
 
 	}
 
-    auto started_time = std::chrono::steady_clock::now();
+    //auto started_time = std::chrono::steady_clock::now();
 
 	std::vector<MagSample> samples;
 	
@@ -73,21 +73,21 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-    auto finished_time = std::chrono::steady_clock::now();
+    //auto finished_time = std::chrono::steady_clock::now();
 
-    std::chrono::duration<double> start_dur = started_time - start_time;
-    std::chrono::duration<double> finish_dur = finished_time - started_time;
-    std::chrono::duration<double> full_dur = finished_time - start_time;
+    //std::chrono::duration<double> start_dur = started_time - start_time;
+    //std::chrono::duration<double> finish_dur = finished_time - started_time;
+    //std::chrono::duration<double> full_dur = finished_time - start_time;
 
-    std::cout <<  start_dur.count() << "\t" << finish_dur.count() << "\t" << full_dur.count() << std::endl;;
+    //std::cout <<  start_dur.count() << "\t" << finish_dur.count() << "\t" << full_dur.count() << std::endl;;
 
-	mag_samples_window_.push_back(samples);
+	//mag_samples_window_.push_back(samples);
 
-	if (mag_samples_window_.size() > n_periods_) {
+	//if (mag_samples_window_.size() > n_periods_) {
 
-		mag_samples_window_.erase(mag_samples_window_.begin());
+	//	mag_samples_window_.erase(mag_samples_window_.begin());
 
-	}
+	//}
 
 	//while(!msf->Start()) {
 
@@ -96,6 +96,9 @@ void MagSamplePublisherNode::fetchSamples() {
 	//}
 
 	//publishSamples();
+
+	mag_pl_detector::msg::MagMeasurements msg = vecToMsg(samples);
+	mag_measurements_publisher_->publish(msg);
 
 }
 
