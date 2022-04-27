@@ -103,23 +103,23 @@ PowerlineDirectionEstimatorNode::PowerlineDirectionEstimatorNode(const std::stri
 
 		mag0_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
 			"/mag0_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag0AmplitudeCallback, this, std::placeholders::_1));
-		mag1_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
-			"/mag1_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag1AmplitudeCallback, this, std::placeholders::_1));
-		mag2_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
-			"/mag2_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag2AmplitudeCallback, this, std::placeholders::_1));
-		mag3_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
-			"/mag3_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag3AmplitudeCallback, this, std::placeholders::_1));
+		//mag1_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
+		//	"/mag1_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag1AmplitudeCallback, this, std::placeholders::_1));
+		//mag2_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
+		//	"/mag2_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag2AmplitudeCallback, this, std::placeholders::_1));
+		//mag3_amplitude_vector_sub_ = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
+		//	"/mag3_amplitude_vector", 10, std::bind(&PowerlineDirectionEstimatorNode::mag3AmplitudeCallback, this, std::placeholders::_1));
 
 	} else {
 
-		mag0_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
-			"/mag0_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag0PhasorCallback, this, std::placeholders::_1));
-		mag1_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
-			"/mag1_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag1PhasorCallback, this, std::placeholders::_1));
-		mag2_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
-			"/mag2_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag2PhasorCallback, this, std::placeholders::_1));
-		mag3_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
-			"/mag3_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag3PhasorCallback, this, std::placeholders::_1));
+		//mag0_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
+		//	"/mag0_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag0PhasorCallback, this, std::placeholders::_1));
+		//mag1_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
+		//	"/mag1_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag1PhasorCallback, this, std::placeholders::_1));
+		//mag2_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
+		//	"/mag2_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag2PhasorCallback, this, std::placeholders::_1));
+		//mag3_phasor_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasor>(
+		//	"/mag3_phasor", 10, std::bind(&PowerlineDirectionEstimatorNode::mag3PhasorCallback, this, std::placeholders::_1));
 
 	}
 
@@ -452,12 +452,12 @@ void PowerlineDirectionEstimatorNode::publishMagPowerlineDirection(quat_t q) {
 
 }
 
-void PowerlineDirectionEstimatorNode::mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+void PowerlineDirectionEstimatorNode::mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.vector.x,
-		msg.vector.y,
-		msg.vector.z
+		msg->vector.x,
+		msg->vector.y,
+		msg->vector.z
 	);
 
 	ampl = R_drone_to_mag0_ * ampl;
@@ -470,12 +470,12 @@ void PowerlineDirectionEstimatorNode::mag0AmplitudeCallback(geometry_msgs::msg::
 
 }
 
-void PowerlineDirectionEstimatorNode::mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+void PowerlineDirectionEstimatorNode::mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.vector.x,
-		msg.vector.y,
-		msg.vector.z
+		msg->vector.x,
+		msg->vector.y,
+		msg->vector.z
 	);
 
 	ampl = R_drone_to_mag1_ * ampl;
@@ -488,12 +488,12 @@ void PowerlineDirectionEstimatorNode::mag1AmplitudeCallback(geometry_msgs::msg::
 
 }
 
-void PowerlineDirectionEstimatorNode::mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+void PowerlineDirectionEstimatorNode::mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.vector.x,
-		msg.vector.y,
-		msg.vector.z
+		msg->vector.x,
+		msg->vector.y,
+		msg->vector.z
 	);
 
 	ampl = R_drone_to_mag2_ * ampl;
@@ -506,12 +506,12 @@ void PowerlineDirectionEstimatorNode::mag2AmplitudeCallback(geometry_msgs::msg::
 
 }
 
-void PowerlineDirectionEstimatorNode::mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+void PowerlineDirectionEstimatorNode::mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.vector.x,
-		msg.vector.y,
-		msg.vector.z
+		msg->vector.x,
+		msg->vector.y,
+		msg->vector.z
 	);
 
 	ampl = R_drone_to_mag3_ * ampl;
@@ -524,12 +524,12 @@ void PowerlineDirectionEstimatorNode::mag3AmplitudeCallback(geometry_msgs::msg::
 
 }
 
-void PowerlineDirectionEstimatorNode::mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+void PowerlineDirectionEstimatorNode::mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.amplitudes.x,
-		msg.amplitudes.y,
-		msg.amplitudes.z
+		msg->amplitudes.x,
+		msg->amplitudes.y,
+		msg->amplitudes.z
 	);
 
 	ampl = R_drone_to_mag0_ * ampl;
@@ -542,12 +542,12 @@ void PowerlineDirectionEstimatorNode::mag0PhasorCallback(mag_pl_detector::msg::M
 
 }
 
-void PowerlineDirectionEstimatorNode::mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+void PowerlineDirectionEstimatorNode::mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.amplitudes.x,
-		msg.amplitudes.y,
-		msg.amplitudes.z
+		msg->amplitudes.x,
+		msg->amplitudes.y,
+		msg->amplitudes.z
 	);
 
 	ampl = R_drone_to_mag1_ * ampl;
@@ -560,12 +560,12 @@ void PowerlineDirectionEstimatorNode::mag1PhasorCallback(mag_pl_detector::msg::M
 
 }
 
-void PowerlineDirectionEstimatorNode::mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+void PowerlineDirectionEstimatorNode::mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.amplitudes.x,
-		msg.amplitudes.y,
-		msg.amplitudes.z
+		msg->amplitudes.x,
+		msg->amplitudes.y,
+		msg->amplitudes.z
 	);
 
 	ampl = R_drone_to_mag2_ * ampl;
@@ -578,12 +578,12 @@ void PowerlineDirectionEstimatorNode::mag2PhasorCallback(mag_pl_detector::msg::M
 
 }
 
-void PowerlineDirectionEstimatorNode::mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+void PowerlineDirectionEstimatorNode::mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg) {
 
 	vector_t ampl(
-		msg.amplitudes.x,
-		msg.amplitudes.y,
-		msg.amplitudes.z
+		msg->amplitudes.x,
+		msg->amplitudes.y,
+		msg->amplitudes.z
 	);
 
 	ampl = R_drone_to_mag3_ * ampl;

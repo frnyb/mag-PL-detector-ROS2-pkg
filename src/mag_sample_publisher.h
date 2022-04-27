@@ -23,7 +23,9 @@ explicit
                             const std::string & node_namespace="/mag_sample_publisher");
 
 private:
-    rclcpp::TimerBase::SharedPtr timer_{nullptr};
+    rclcpp::TimerBase::SharedPtr fetch_samples_timer_{nullptr};
+    rclcpp::TimerBase::SharedPtr publish_samples_timer_{nullptr};
+
     rclcpp::Publisher<mag_pl_detector::msg::MagMeasurements>::SharedPtr mag_measurements_publisher_;
 
     mag_pl_detector::msg::MagMeasurements msg_;
@@ -32,9 +34,13 @@ private:
 
     int n_periods_;
 
-    void magTimerCallback();
+    std::vector<std::vector<MagSample>> mag_samples_window_;
+
+    void fetchSamples();
+    void publishSamples();
 
     mag_pl_detector::msg::MagMeasurements vecToMsg(std::vector<MagSample> vec);
+    mag_pl_detector::msg::MagMeasurements windowToMsg();
 
 };
 

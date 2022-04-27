@@ -77,10 +77,12 @@ install(TARGETS sine_reconstructor DESTINATION lib/${PROJECT_NAME})
 
 add_executable(pl_dir_estimator
   src/pl_dir_estimator.cpp
+  src/geometry.cpp
 )
 ament_target_dependencies(pl_dir_estimator
   rclcpp
   Eigen3
+  geometry_msgs
 )
 rosidl_target_interfaces(pl_dir_estimator
   ${PROJECT_NAME} "rosidl_typesupport_cpp"

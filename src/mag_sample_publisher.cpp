@@ -26,19 +26,37 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	msf = new MagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
 
-	timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::magTimerCallback, this));
-
-	msf->GetSamples(n_periods);
-
 	n_periods_ = n_periods;
+
+	msf->GetSamples(1);
+
+	fetch_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	publish_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
 
-void MagSamplePublisherNode::magTimerCallback() {
+void MagSamplePublisherNode::fetchSamples() {
 
 	std::vector<MagSample> samples = msf->GetSamples();
 
-	mag_pl_detector::msg::MagMeasurements mag_measurements_msg = vecToMsg(samples);
+	mag_samples_window_.push_back(samples);
+
+	if (mag_samples_window_.size() < n_periods_) {
+
+		return;
+
+	} else if (mag_samples_window_.size() > n_periods_) {
+
+		mag_samples_window_.erase(mag_samples_window_.begin());
+
+	}
+}
+
+void MagSamplePublisherNode::publishSamples() {
+
+	//mag_pl_detector::msg::MagMeasurements mag_measurements_msg = vecToMsg(samples);
+
+	mag_pl_detector::msg::MagMeasurements mag_measurements_msg = windowToMsg();
 
 	mag_measurements_publisher_->publish(mag_measurements_msg);
 
@@ -72,6 +90,44 @@ mag_pl_detector::msg::MagMeasurements MagSamplePublisherNode::vecToMsg(std::vect
 	}
 
 	msg.samples = vector;
+
+	return msg;
+
+}
+
+mag_pl_detector::msg::MagMeasurements MagSamplePublisherNode::windowToMsg() {
+
+	mag_pl_detector::msg::MagMeasurements msg;
+
+	std::vector<mag_pl_detector::msg::MagMeasurement> vector;
+	
+	for (int i = 0; i < mag_samples_window_.size(); i++) {
+
+		for (int j = 0; j < mag_samples_window_[i].size(); j++) {
+
+			mag_pl_detector::msg::MagMeasurement sub_msg;
+
+			std::vector<int16_t> data;
+			std::vector<int32_t> time_offsets;
+
+			for (int k = 0; k < 12; k++) {
+
+				sample_t sample = mag_samples_window_[i][j][k];
+				data.push_back(sample.data);
+				time_offsets.push_back(sample.time_offset);
+
+			}
+
+			sub_msg.data = data;
+			sub_msg.time_offset = time_offsets;
+
+			vector.push_back(sub_msg);
+
+		}
+	}
+
+	msg.samples = vector;
+	msg.count = vector.size();
 
 	return msg;
 

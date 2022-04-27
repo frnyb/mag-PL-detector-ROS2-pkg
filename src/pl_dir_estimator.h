@@ -8,6 +8,7 @@
 #include <mutex>
 
 #include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3_stamped.hpp>
@@ -111,15 +112,15 @@ private:
 
     void odometryCallback();
 
-	void mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
-	void mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
-	void mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
-	void mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
+	void mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg);
+	void mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg);
+	void mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg);
+	void mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped::SharedPtr msg);
 
-	void mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
-	void mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
-	void mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
-	void mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
+	void mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg);
+	void mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg);
+	void mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg);
+	void mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor::SharedPtr msg);
 
 };
 
