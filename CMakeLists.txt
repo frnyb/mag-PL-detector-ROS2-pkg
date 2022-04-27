@@ -21,16 +21,76 @@ link_directories(include/MagSampleFetcher_cpp/src)
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
 
-add_executable(mag_sample_fetcher
-  src/mag_sample_fetcher.cpp
-  include/MagSampleFetcher_cpp/src/mag_sample*.cpp 
-  include/MagSampleFetcher_cpp/include/BRAM-uio-driver/src/bram_uio.cpp 
-  include/MagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/MagSampleFetcher/drivers/MagSampleFetcher_v1_0/src/*.c
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MagMeasurement.msg"
+  "msg/MagMeasurements.msg"
+  "msg/SineReconstruction.msg"
+  "msg/MagneticPhasor.msg"
+  DEPENDENCIES std_msgs geometry_msgs
 )
-ament_target_dependencies(mag_sample_fetcher
+
+add_executable(mag_sample_publisher
+  src/mag_sample_publisher.cpp
+  include/MagSampleFetcher_cpp/src/mag_sample_fetcher.cpp 
+  include/MagSampleFetcher_cpp/src/mag_sample.cpp 
+  include/MagSampleFetcher_cpp/include/BRAM-uio-driver/src/bram_uio.cpp 
+  include/MagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/MagSampleFetcher/drivers/MagSampleFetcher_v1_0/src/xmagsamplefetcher.c
+  include/MagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/MagSampleFetcher/drivers/MagSampleFetcher_v1_0/src/xmagsamplefetcher_linux.c
+)
+ament_target_dependencies(mag_sample_publisher
   rclcpp
 )
-install(TARGETS mag_sample_fetcher DESTINATION lib/${PROJECT_NAME})
+rosidl_target_interfaces(mag_sample_publisher
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS mag_sample_publisher DESTINATION lib/${PROJECT_NAME})
+
+add_executable(mag_sample_file_publisher
+  src/mag_sample_file_publisher.cpp
+)
+ament_target_dependencies(mag_sample_file_publisher
+  rclcpp
+)
+rosidl_target_interfaces(mag_sample_file_publisher
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS mag_sample_file_publisher DESTINATION lib/${PROJECT_NAME})
+
+add_executable(sine_reconstructor
+  src/sine_reconstructor.cpp
+  src/mag_measurements_class.cpp
+)
+ament_target_dependencies(sine_reconstructor
+  rclcpp
+  Eigen3
+  geometry_msgs
+)
+rosidl_target_interfaces(sine_reconstructor
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS sine_reconstructor DESTINATION lib/${PROJECT_NAME})
+
+add_executable(pl_dir_estimator
+  src/pl_dir_estimator.cpp
+)
+ament_target_dependencies(pl_dir_estimator
+  rclcpp
+  Eigen3
+)
+rosidl_target_interfaces(pl_dir_estimator
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS pl_dir_estimator DESTINATION lib/${PROJECT_NAME})
+
+# Install launch files
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()

@@ -4,10 +4,11 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include <fstream>
+#include <sstream>
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "mag_sample_fetcher.h"
 #include "mag_pl_detector/msg/mag_measurements.hpp"
 
 using namespace std::chrono_literals;
@@ -16,10 +17,10 @@ using namespace std::chrono_literals;
  * Class
  *********************************************************************************/
 
-class MagSamplePublisherNode : public rclcpp::Node {
+class MagSampleFilePublisherNode : public rclcpp::Node {
 public:
 explicit
-    MagSamplePublisherNode(const std::string & node_name="mag_sample_publisher", 
+    MagSampleFilePublisherNode(const std::string & node_name="mag_sample_publisher", 
                             const std::string & node_namespace="/mag_sample_publisher");
 
 private:
@@ -27,14 +28,11 @@ private:
     rclcpp::Publisher<mag_pl_detector::msg::MagMeasurements>::SharedPtr mag_measurements_publisher_;
 
     mag_pl_detector::msg::MagMeasurements msg_;
-
-    MagSampleFetcher *msf;
-
-    int n_periods_;
+    std::string filename_;
 
     void magTimerCallback();
 
-    mag_pl_detector::msg::MagMeasurements vecToMsg(std::vector<MagSample> vec);
+    mag_pl_detector::msg::MagMeasurements loadMsg(std::string filename);
 
 };
 
