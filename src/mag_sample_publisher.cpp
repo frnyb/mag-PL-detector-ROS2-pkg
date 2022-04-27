@@ -43,17 +43,27 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 void MagSamplePublisherNode::fetchSamples() {
 
-	if (first_run_) {
+	//if (first_run_) {
 
-		while(!msf->Start()) {
+	//	while(!msf->Start()) {
 
-			sleep_rate.sleep();
+	//		sleep_rate.sleep();
 
-		}
+	//	}
 
-		first_run_ = false;
+	//	first_run_ = false;
+
+	//}
+
+	auto start_time = std::chrono::steady_clock::now();
+
+	while(!msf->Start()) {
+
+		sleep_rate.sleep();
 
 	}
+
+    auto started_time = std::chrono::steady_clock::now();
 
 	std::vector<MagSample> samples;
 	
@@ -63,6 +73,14 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
+    auto finished_time = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double> start_dur = started_time - start_time;
+    std::chrono::duration<double> finish_dur = finished_time - started_time;
+    std::chrono::duration<double> full_dur = finished_time - start_time;
+
+    std::cout <<  start_dur.count() << "\t" << finish_dur.count() << "\t" << full_dur.count() << std::endl;;
+
 	mag_samples_window_.push_back(samples);
 
 	if (mag_samples_window_.size() > n_periods_) {
@@ -71,13 +89,13 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-	while(!msf->Start()) {
+	//while(!msf->Start()) {
 
-		sleep_rate.sleep();
+	//	sleep_rate.sleep();
 
-	}
+	//}
 
-	publishSamples();
+	//publishSamples();
 
 }
 
