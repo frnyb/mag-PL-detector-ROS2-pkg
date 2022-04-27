@@ -10,7 +10,7 @@
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
 				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
-	this->declare_parameter<int>("bram_uio_number", 0);
+	this->declare_parameter<int>("bram_uio_number", 1);
 	this->declare_parameter<int>("bram_size", 8192);
 	this->declare_parameter<int>("n_periods", 20);
 
@@ -63,14 +63,6 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-	//for (int i = 0; i < samples.size(); i++) {
-	//	for (int j = 0; j < 12; j++) {
-	//		std::cout << samples[i][j].data << "\t";
-	//	}
-	//	std::cout << std::endl;
-	//}
-	return;
-
 	mag_samples_window_.push_back(samples);
 
 	if (mag_samples_window_.size() > n_periods_) {
@@ -85,7 +77,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-	//publishSamples();
+	publishSamples();
 
 }
 
