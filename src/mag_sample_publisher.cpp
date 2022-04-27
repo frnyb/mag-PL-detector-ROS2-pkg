@@ -12,7 +12,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
 	this->declare_parameter<int>("bram_size", 8192);
-	this->declare_parameter<int>("n_periods", 20);
+	this->declare_parameter<int>("n_periods", 10);
 
 	int bram_uio_number;
 	int bram_size;
