@@ -55,6 +55,9 @@ private:
 	rclcpp::Subscription<mag_pl_detector::msg::MagneticPhasor>::SharedPtr mag2_phasor_sub_;
 	rclcpp::Subscription<mag_pl_detector::msg::MagneticPhasor>::SharedPtr mag3_phasor_sub_;
 
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pl_direction_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr mag_pl_direction_pub_;
+
     std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
 
@@ -66,10 +69,15 @@ private:
 	quat_t drone_quat_;
 	quat_t last_drone_quat_;
 
-	geometry_msgs::msg::TransformStamped drone_T_mag0;
-	geometry_msgs::msg::TransformStamped drone_T_mag1;
-	geometry_msgs::msg::TransformStamped drone_T_mag2;
-	geometry_msgs::msg::TransformStamped drone_T_mag3;
+	rotation_matrix_t R_drone_to_mag0_;
+	rotation_matrix_t R_drone_to_mag1_;
+	rotation_matrix_t R_drone_to_mag2_;
+	rotation_matrix_t R_drone_to_mag3_;
+
+	vector_t v_drone_to_mag0_;
+	vector_t v_drone_to_mag1_;
+	vector_t v_drone_to_mag2_;
+	vector_t v_drone_to_mag3_;
 
     float q_, r_odom_, r_mag_vec_;
 
@@ -98,19 +106,20 @@ private:
     float mapAngle(float curr_angle, float new_angle);
     float backmapAngle(float angle);
 
-	void publishPowerlineDirection();
+	void publishPowerlineDirection(quat_t q);
+	void publishMagPowerlineDirection(quat_t q);
 
     void odometryCallback();
 
-	void mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped);
-	void mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped);
-	void mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped);
-	void mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped);
+	void mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
+	void mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
+	void mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
+	void mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg);
 
-	void mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor);
-	void mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor);
-	void mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor);
-	void mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor);
+	void mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
+	void mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
+	void mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
+	void mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg);
 
 };
 

@@ -45,8 +45,59 @@ PowerlineDirectionEstimatorNode::PowerlineDirectionEstimatorNode(const std::stri
 
 			mag3_tf = tf_buffer_->lookupTransform("drone", "mag3", tf2::TimePointZero);
 			RCLCPP_INFO(this->get_logger(), "Found mag3 transform, frame drone to mag0");
+
+		} catch(tf2::TransformException & ex) {
+
+			RCLCPP_INFO(this->get_logger(), "Could not get mag transform, trying again...");
+
 		}
 	}
+
+	quat_t mag0_quat(
+		mag0_tf.transform.rotation.w,
+		mag0_tf.transform.rotation.x,
+		mag0_tf.transform.rotation.y,
+		mag0_tf.transform.rotation.z
+	);
+	quat_t mag1_quat(
+		mag1_tf.transform.rotation.w,
+		mag1_tf.transform.rotation.x,
+		mag1_tf.transform.rotation.y,
+		mag1_tf.transform.rotation.z
+	);
+	quat_t mag2_quat(
+		mag2_tf.transform.rotation.w,
+		mag2_tf.transform.rotation.x,
+		mag2_tf.transform.rotation.y,
+		mag2_tf.transform.rotation.z
+	);
+	quat_t mag3_quat(
+		mag3_tf.transform.rotation.w,
+		mag3_tf.transform.rotation.x,
+		mag3_tf.transform.rotation.y,
+		mag3_tf.transform.rotation.z
+	);
+
+	R_drone_to_mag0_ = quatToMat(mag0_quat);
+	R_drone_to_mag1_ = quatToMat(mag1_quat);
+	R_drone_to_mag2_ = quatToMat(mag2_quat);
+	R_drone_to_mag3_ = quatToMat(mag3_quat);
+
+	v_drone_to_mag0_(0) = mag0_tf.transform.translation.x;
+	v_drone_to_mag0_(1) = mag0_tf.transform.translation.x;
+	v_drone_to_mag0_(2) = mag0_tf.transform.translation.x;
+
+	v_drone_to_mag1_(0) = mag1_tf.transform.translation.x;
+	v_drone_to_mag1_(1) = mag1_tf.transform.translation.x;
+	v_drone_to_mag1_(2) = mag1_tf.transform.translation.x;
+
+	v_drone_to_mag2_(0) = mag2_tf.transform.translation.x;
+	v_drone_to_mag2_(1) = mag2_tf.transform.translation.x;
+	v_drone_to_mag2_(2) = mag2_tf.transform.translation.x;
+
+	v_drone_to_mag3_(0) = mag3_tf.transform.translation.x;
+	v_drone_to_mag3_(1) = mag3_tf.transform.translation.x;
+	v_drone_to_mag3_(2) = mag3_tf.transform.translation.x;
 
 	if (fixed_phase_) {
 
@@ -124,7 +175,11 @@ void PowerlineDirectionEstimatorNode::odometryCallback() {
 
 	updateFromOdometry();
 
-    publishPowerlineDirection();
+	direction_mutex_.lock(); {
+
+		publishPowerlineDirection(pl_direction_);
+
+	} direction_mutex_.unlock();
 
 }
 
@@ -357,41 +412,187 @@ float PowerlineDirectionEstimatorNode::mapAngle(float curr_angle, float new_angl
 
 }
 
-void PowerlineDirectionEstimatorNode::publishPowerlineDirection() {
+void PowerlineDirectionEstimatorNode::publishPowerlineDirection(quat_t q) {
 
-	
+	geometry_msgs::msg::PoseStamped msg;
 
-}
+	msg.header.frame_id = "drone";
+	msg.header.stamp = this->get_clock()->now();
 
-void PowerlineDirectionEstimatorNode::mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped) {
+	msg.pose.orientation.w = q(0);
+	msg.pose.orientation.x = q(1);
+	msg.pose.orientation.y = q(2);
+	msg.pose.orientation.z = q(3);
 
-}
+	msg.pose.position.x = 0;
+	msg.pose.position.y = 0;
+	msg.pose.position.z = 0;
 
-void PowerlineDirectionEstimatorNode::mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped) {
-
-}
-
-void PowerlineDirectionEstimatorNode::mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped) {
-
-}
-
-void PowerlineDirectionEstimatorNode::mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped) {
+	pl_direction_pub_->publish(msg);
 
 }
 
-void mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor) {
+void PowerlineDirectionEstimatorNode::publishMagPowerlineDirection(quat_t q) {
+
+	geometry_msgs::msg::PoseStamped msg;
+
+	msg.header.frame_id = "drone";
+	msg.header.stamp = this->get_clock()->now();
+
+	msg.pose.orientation.w = q(0);
+	msg.pose.orientation.x = q(1);
+	msg.pose.orientation.y = q(2);
+	msg.pose.orientation.z = q(3);
+
+	msg.pose.position.x = 0;
+	msg.pose.position.y = 0;
+	msg.pose.position.z = 0;
+
+	mag_pl_direction_pub_->publish(msg);
 
 }
 
-void mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor) {
+void PowerlineDirectionEstimatorNode::mag0AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+
+	vector_t ampl(
+		msg.vector.x,
+		msg.vector.y,
+		msg.vector.z
+	);
+
+	ampl = R_drone_to_mag0_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag0_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
 
 }
 
-void mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor) {
+void PowerlineDirectionEstimatorNode::mag1AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+
+	vector_t ampl(
+		msg.vector.x,
+		msg.vector.y,
+		msg.vector.z
+	);
+
+	ampl = R_drone_to_mag1_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag1_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
 
 }
 
-void mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor) {
+void PowerlineDirectionEstimatorNode::mag2AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+
+	vector_t ampl(
+		msg.vector.x,
+		msg.vector.y,
+		msg.vector.z
+	);
+
+	ampl = R_drone_to_mag2_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag2_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
+
+}
+
+void PowerlineDirectionEstimatorNode::mag3AmplitudeCallback(geometry_msgs::msg::Vector3Stamped msg) {
+
+	vector_t ampl(
+		msg.vector.x,
+		msg.vector.y,
+		msg.vector.z
+	);
+
+	ampl = R_drone_to_mag3_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag3_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
+
+}
+
+void PowerlineDirectionEstimatorNode::mag0PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+
+	vector_t ampl(
+		msg.amplitudes.x,
+		msg.amplitudes.y,
+		msg.amplitudes.z
+	);
+
+	ampl = R_drone_to_mag0_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag0_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
+
+}
+
+void PowerlineDirectionEstimatorNode::mag1PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+
+	vector_t ampl(
+		msg.amplitudes.x,
+		msg.amplitudes.y,
+		msg.amplitudes.z
+	);
+
+	ampl = R_drone_to_mag1_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag1_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
+
+}
+
+void PowerlineDirectionEstimatorNode::mag2PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+
+	vector_t ampl(
+		msg.amplitudes.x,
+		msg.amplitudes.y,
+		msg.amplitudes.z
+	);
+
+	ampl = R_drone_to_mag2_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag2_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
+
+}
+
+void PowerlineDirectionEstimatorNode::mag3PhasorCallback(mag_pl_detector::msg::MagneticPhasor msg) {
+
+	vector_t ampl(
+		msg.amplitudes.x,
+		msg.amplitudes.y,
+		msg.amplitudes.z
+	);
+
+	ampl = R_drone_to_mag3_ * ampl;
+
+	ampl_vec_mutex_.lock(); {
+
+		mag3_ampl_vec = ampl;
+
+	} ampl_vec_mutex_.unlock();
 
 }
 
