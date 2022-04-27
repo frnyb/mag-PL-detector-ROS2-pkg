@@ -63,12 +63,12 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-	for (int i = 0; i < samples.size(); i++) {
-		for (int j = 0; j < 12; j++) {
-			std::cout << samples[i][j].data << "\t";
-		}
-		std::cout << std::endl;
-	}
+	//for (int i = 0; i < samples.size(); i++) {
+	//	for (int j = 0; j < 12; j++) {
+	//		std::cout << samples[i][j].data << "\t";
+	//	}
+	//	std::cout << std::endl;
+	//}
 	return;
 
 	mag_samples_window_.push_back(samples);
