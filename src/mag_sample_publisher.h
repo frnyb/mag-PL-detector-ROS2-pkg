@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include <queue>
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -31,6 +32,8 @@ private:
     mag_pl_detector::msg::MagMeasurements msg_;
 
     MagSampleFetcher *msf;
+	rclcpp::Rate sleep_rate;
+    bool first_run_;
 
     int n_periods_;
 

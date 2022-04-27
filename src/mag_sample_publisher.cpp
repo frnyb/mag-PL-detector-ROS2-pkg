@@ -8,7 +8,7 @@
  *********************************************************************************/
 
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
-				: rclcpp::Node(node_name, node_namespace) {
+				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 0);
 	this->declare_parameter<int>("bram_size", 8192);
@@ -28,16 +28,40 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	n_periods_ = n_periods;
 
-	msf->GetSamples(1);
+	while(!msf->Start(1)) {
+
+		sleep_rate.sleep();
+
+	}
+
+	first_run_ = true;
 
 	fetch_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
-	publish_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
+	//publish_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
 
 void MagSamplePublisherNode::fetchSamples() {
 
-	std::vector<MagSample> samples = msf->GetSamples();
+	if (first_run_) {
+
+		while(!msf->Start()) {
+
+			sleep_rate.sleep();
+
+		}
+
+		first_run_ = false;
+
+	}
+
+	std::vector<MagSample> samples;
+	
+	while(!msf->GetSamples(&samples)) {
+
+		sleep_rate.sleep();
+
+	}
 
 	mag_samples_window_.push_back(samples);
 
@@ -46,6 +70,15 @@ void MagSamplePublisherNode::fetchSamples() {
 		mag_samples_window_.erase(mag_samples_window_.begin());
 
 	}
+
+	while(!msf->Start()) {
+
+		sleep_rate.sleep();
+
+	}
+
+	publishSamples();
+
 }
 
 void MagSamplePublisherNode::publishSamples() {
