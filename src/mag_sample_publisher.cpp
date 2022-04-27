@@ -8,7 +8,7 @@
  *********************************************************************************/
 
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
-				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
+				: rclcpp::Node(node_name, node_namespace), sleep_rate(100) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
 	this->declare_parameter<int>("bram_size", 8192);
