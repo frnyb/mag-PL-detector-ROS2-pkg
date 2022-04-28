@@ -16,8 +16,12 @@ def generate_launch_description():
     )
 
     physical_setup_launch = IncludeLaunchDescription(
-        package="mag_pl_detector",
-        launch="physical_setup.launch.py"
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare("mag_pl_detector"),
+                "launch/physical_setup.launch.py"
+            ])
+        ])
     )
 
     mag_sample_publisher = Node(
@@ -41,5 +45,6 @@ def generate_launch_description():
     return LaunchDescription([
         physical_setup_launch,
         mag_sample_publisher,
-        sine_reconstructor
+        sine_reconstructor,
+        camera
     ])
