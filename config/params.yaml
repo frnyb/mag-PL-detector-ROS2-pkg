@@ -1,0 +1,16 @@
+drone_frame_broadcaster:
+  ros__parameters:
+    world_frame_id: "world"
+    drone_frame_id: "drone"
+
+/**:
+    ros__parameters:
+      video_device: "/dev/video0"
+      framerate: 10.0
+      io_method: "mmap"
+      frame_id: "camera"
+      pixel_format: "yuyv"
+      image_width: 640
+      image_height: 480
+      camera_name: "test_camera"
+      camera_info_url: "package://usb_cam/config/camera_info.yaml"

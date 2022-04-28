@@ -7,6 +7,12 @@ from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import PathJoinSubstitution
 
 def generate_launch_description():
+    config = os.path.join(
+        get_package_share_directory('mag_pl_detector'),
+        'config',
+        'params.yaml'
+    )
+
     physical_setup_launch = IncludeLaunchDescription(
         package="mag_pl_detector",
         launch="physical_setup.launch.py"
@@ -14,12 +20,20 @@ def generate_launch_description():
 
     mag_sample_publisher = Node(
         package="mag_pl_detector",
-        executable="mag_sample_publisher"
+        executable="mag_sample_publisher",
+        params = [config]
     )
 
     sine_reconstructor = Node(
         package="mag_pl_detector",
-        executable="sine_reconstructor"
+        executable="sine_reconstructor",
+        params=[config]
+    )
+
+    camera = Node(
+        package="usb_cam",
+        executable="usb_cam_node_exe",
+        params=[config]
     )
 
     return LaunchDescription([
