@@ -27,19 +27,19 @@ def generate_launch_description():
     mag_sample_publisher = Node(
         package="mag_pl_detector",
         executable="mag_sample_publisher",
-        params = [config]
+        parameters = [config]
     )
 
     sine_reconstructor = Node(
         package="mag_pl_detector",
         executable="sine_reconstructor",
-        params=[config]
+        parameters=[config]
     )
 
     camera = Node(
         package="usb_cam",
         executable="usb_cam_node_exe",
-        params=[config]
+        parameters=[config]
     )
 
     return LaunchDescription([
