@@ -20,6 +20,7 @@
   <depend>std_msgs</depend>
   <depend>rclcpp</depend>
   <depend>iii_drone</depend>
+  <depend>usb_cam</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
