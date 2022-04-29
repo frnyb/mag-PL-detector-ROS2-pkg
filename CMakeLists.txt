@@ -25,6 +25,8 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MagMeasurement.msg"
@@ -74,6 +76,22 @@ rosidl_target_interfaces(sine_reconstructor
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
 install(TARGETS sine_reconstructor DESTINATION lib/${PROJECT_NAME})
+
+add_executable(pl_dir_computer
+  src/pl_dir_computer.cpp
+  src/geometry.cpp
+)
+ament_target_dependencies(pl_dir_computer
+  rclcpp
+  Eigen3
+  geometry_msgs
+  tf2
+  tf2_ros
+)
+rosidl_target_interfaces(pl_dir_computer
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS pl_dir_computer DESTINATION lib/${PROJECT_NAME})
 
 add_executable(pl_dir_estimator
   src/pl_dir_estimator.cpp
