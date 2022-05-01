@@ -1,3 +1,6 @@
 [submodule "include/MagSampleFetcher_cpp"]
 	path = include/MagSampleFetcher_cpp
 	url = https://github.com/frnyb/MagSampleFetcher_cpp.git
+[submodule "include/SlidingWindowMagSampleFetcher_cpp"]
+	path = include/SlidingWindowMagSampleFetcher_cpp
+	url = https://github.com/frnyb/SlidingWindowMagSampleFetcher_cpp.git
