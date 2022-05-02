@@ -97,7 +97,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//publishSamples();
 
-	mag_pl_detector::msg::MagMeasurements msg = vecToMsg(samples);
+	mag_pl_detector::msg::MagMeasurements msg; // = vecToMsg(samples);
 	mag_measurements_publisher_->publish(msg);
 
 }
