@@ -42,7 +42,7 @@ SineReconstructorNode::SineReconstructorNode(const std::string & node_name,
 
 void SineReconstructorNode::magMeasurementsCallback(const mag_pl_detector::msg::MagMeasurements::SharedPtr msg) {
 
-	MagMeasurementsClass mag_meas(*msg, fixed_phase_);
+	MagMeasurementsClass mag_meas(*msg, fixed_phase_, true);
 
 	sine_reconstruction_pub_->publish(mag_meas.GetMsg());
 

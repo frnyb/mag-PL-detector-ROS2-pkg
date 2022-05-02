@@ -8,7 +8,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "mag_sample_fetcher.h"
+#include "sliding_window_mag_sample_fetcher.h"
 #include "mag_pl_detector/msg/mag_measurements.hpp"
 
 using namespace std::chrono_literals;
@@ -31,7 +31,7 @@ private:
 
     mag_pl_detector::msg::MagMeasurements msg_;
 
-    MagSampleFetcher *msf;
+    SlidingWindowMagSampleFetcher *msf;
 	rclcpp::Rate sleep_rate;
     bool first_run_;
 

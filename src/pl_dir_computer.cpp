@@ -187,7 +187,7 @@ void PowerlineDirectionComputerNode::updateFromMagVectors() {
 		vectors[0] = norm_mag0_ampl_vec;
 		vectors[1] = norm_mag1_ampl_vec;
 		vectors[2] = norm_mag2_ampl_vec;
-		vectors[3] = norm_mag3_ampl_vec;
+		//vectors[3] = norm_mag3_ampl_vec;
 
 	} ampl_vec_mutex_.unlock();
 

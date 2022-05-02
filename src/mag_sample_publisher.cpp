@@ -8,11 +8,11 @@
  *********************************************************************************/
 
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
-				: rclcpp::Node(node_name, node_namespace), sleep_rate(10000000) {
+				: rclcpp::Node(node_name, node_namespace), sleep_rate(2000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
-	this->declare_parameter<int>("bram_size", 8192);
-	this->declare_parameter<int>("n_periods", 10);
+	this->declare_parameter<int>("bram_size", 4*4096);
+	this->declare_parameter<int>("n_periods", 20);
 
 	int bram_uio_number;
 	int bram_size;
@@ -24,7 +24,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("/mag_measurements", 10);
 
-	msf = new MagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
+	msf = new SlidingWindowMagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
 
 	n_periods_ = n_periods;
 
@@ -36,7 +36,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	first_run_ = true;
 
-	fetch_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	fetch_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
 	//publish_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
@@ -57,7 +57,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//auto start_time = std::chrono::steady_clock::now();
 
-	while(!msf->Start(n_periods_)) {
+	while(!msf->Start()) {
 
 		sleep_rate.sleep();
 

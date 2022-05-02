@@ -21,7 +21,7 @@
 
 class MagMeasurementsClass {
 public:
-	MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase);
+	MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase, bool invert_z);
 
 	mag_pl_detector::msg::SineReconstruction GetMsg();
 	std::vector<geometry_msgs::msg::Vector3Stamped> GetAmplitudeVectorMsgs(builtin_interfaces::msg::Time stamp);
@@ -32,6 +32,7 @@ private:
 	Eigen::MatrixXd mag_times_;
 
 	bool fixed_phase_;
+	bool invert_z_;
 
 	int n_samples_;
 	int phase_ref_idx_;

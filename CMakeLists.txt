@@ -15,8 +15,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-include_directories(include/MagSampleFetcher_cpp/src)
-link_directories(include/MagSampleFetcher_cpp/src)
+include_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
+link_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -38,11 +38,11 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
 add_executable(mag_sample_publisher
   src/mag_sample_publisher.cpp
-  include/MagSampleFetcher_cpp/src/mag_sample_fetcher.cpp 
-  include/MagSampleFetcher_cpp/src/mag_sample.cpp 
-  include/MagSampleFetcher_cpp/include/BRAM-uio-driver/src/bram_uio.cpp 
-  include/MagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/MagSampleFetcher/drivers/MagSampleFetcher_v1_0/src/xmagsamplefetcher.c
-  include/MagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/MagSampleFetcher/drivers/MagSampleFetcher_v1_0/src/xmagsamplefetcher_linux.c
+  include/SlidingWindowMagSampleFetcher_cpp/src/sliding_window_mag_sample_fetcher.cpp 
+  include/SlidingWindowMagSampleFetcher_cpp/src/mag_sample.cpp 
+  include/SlidingWindowMagSampleFetcher_cpp/include/BRAM-uio-driver/src/bram_uio.cpp 
+  include/SlidingWindowMagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/SlidingWindowMagSampleFetcher/drivers/SlidingWindowMagSampleFetcher_v1_0/src/xslidingwindowmagsamplefetcher.c
+  include/SlidingWindowMagSampleFetcher_cpp/include/PL-Mag-Sensor/ip/SlidingWindowMagSampleFetcher/drivers/SlidingWindowMagSampleFetcher_v1_0/src/xslidingwindowmagsamplefetcher_linux.c
 )
 ament_target_dependencies(mag_sample_publisher
   rclcpp

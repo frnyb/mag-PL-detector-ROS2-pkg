@@ -8,10 +8,11 @@
  * Methods
  *********************************************************************************/
 
-MagMeasurementsClass::MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase) :
+MagMeasurementsClass::MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase, bool invert_z) :
 					mag_samples_(measurements_msg.count, 12), mag_times_(measurements_msg.count, 12) {
 
 	fixed_phase_ = fixed_phase;
+	invert_z_ = invert_z;
 
 	loadData(measurements_msg);
 
@@ -237,13 +238,21 @@ std::vector<geometry_msgs::msg::Vector3Stamped> MagMeasurementsClass::GetAmplitu
 	mag2_msg.vector.x = amplitudes_[6];
 	mag2_msg.vector.y = amplitudes_[7];
 	mag2_msg.vector.z = amplitudes_[8];
-	
+
 	geometry_msgs::msg::Vector3Stamped mag3_msg;
 	mag3_msg.header.frame_id = "mag3";
 	mag3_msg.header.stamp = stamp;
 	mag3_msg.vector.x = amplitudes_[9];
 	mag3_msg.vector.y = amplitudes_[10];
 	mag3_msg.vector.z = amplitudes_[11];
+
+	if (invert_z_) {
+		mag0_msg.vector.z = - mag0_msg.vector.z;
+		mag1_msg.vector.z = - mag1_msg.vector.z;
+		mag2_msg.vector.z = - mag2_msg.vector.z;
+		mag3_msg.vector.z = - mag3_msg.vector.z;
+	}
+	
 
 	std::vector<geometry_msgs::msg::Vector3Stamped> vector;
 	vector.push_back(mag0_msg);
