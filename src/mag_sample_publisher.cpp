@@ -8,7 +8,7 @@
  *********************************************************************************/
 
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
-				: rclcpp::Node(node_name, node_namespace), sleep_rate(2000000) {
+				: rclcpp::Node(node_name, node_namespace), sleep_rate(5000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
 	this->declare_parameter<int>("bram_size", 4*4096);
@@ -36,32 +36,32 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	first_run_ = true;
 
-	fetch_samples_timer_ = this->create_wall_timer(1ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	fetch_samples_timer_ = this->create_wall_timer(19ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
 	//publish_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
 
 void MagSamplePublisherNode::fetchSamples() {
 
-	//if (first_run_) {
+	if (first_run_) {
 
-	//	while(!msf->Start()) {
+		while(!msf->Start()) {
 
-	//		sleep_rate.sleep();
+			sleep_rate.sleep();
 
-	//	}
+		}
 
-	//	first_run_ = false;
+		first_run_ = false;
 
-	//}
+	}
 
 	//auto start_time = std::chrono::steady_clock::now();
 
-	while(!msf->Start()) {
+	//while(!msf->Start()) {
 
-		sleep_rate.sleep();
+	//	sleep_rate.sleep();
 
-	}
+	//}
 
     //auto started_time = std::chrono::steady_clock::now();
 
@@ -89,15 +89,15 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//}
 
-	//while(!msf->Start()) {
+	while(!msf->Start()) {
 
-	//	sleep_rate.sleep();
+		sleep_rate.sleep();
 
-	//}
+	}
 
 	//publishSamples();
 
-	mag_pl_detector::msg::MagMeasurements msg; // = vecToMsg(samples);
+	mag_pl_detector::msg::MagMeasurements msg = vecToMsg(samples);
 	mag_measurements_publisher_->publish(msg);
 
 }
