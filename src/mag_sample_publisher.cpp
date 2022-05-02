@@ -28,7 +28,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	n_periods_ = n_periods;
 
-	while(!msf->Start(1)) {
+	while(!msf->Start(n_periods)) {
 
 		sleep_rate.sleep();
 

@@ -107,6 +107,15 @@ rosidl_target_interfaces(pl_dir_estimator
 )
 install(TARGETS pl_dir_estimator DESTINATION lib/${PROJECT_NAME})
 
+# Install Python modules
+ament_python_install_package(${PROJECT_NAME})
+# Install Python executables
+install(PROGRAMS
+  scripts/save_mag_measurements.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
 # Install launch files
 install(DIRECTORY
   launch
