@@ -13,60 +13,76 @@ SineReconstructorNode::SineReconstructorNode(const std::string & node_name,
 					Node(node_name, node_namespace) {
 	
 	this->declare_parameter<bool>("fixed_phase", true);
-
 	this->get_parameter("fixed_phase", fixed_phase_);
+
+	this->declare_parameter<int>("max_n_samples", 800);
+	this->get_parameter("max_n_samples", max_n_samples_);
+
+    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+    transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
+	fetchStaticTransforms();
 
     mag_measurements_sub_ = this->create_subscription<mag_pl_detector::msg::MagMeasurements>(
         "/mag_measurements", 
 		10, std::bind(&SineReconstructorNode::magMeasurementsCallback, this, std::placeholders::_1));
 
-	sine_reconstruction_pub_ = this->create_publisher<mag_pl_detector::msg::SineReconstruction>("/sine_reconstruction", 10);
+	sine_reconstruction_pub_ = this->create_publisher<mag_pl_detector::msg::SineReconstruction>("sine_reconstruction", 10);
 
-	if (fixed_phase_) {
-
-		mag0_amplitude_vector_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("/mag0_amplitude_vector", 10);
-		mag1_amplitude_vector_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("/mag1_amplitude_vector", 10);
-		mag2_amplitude_vector_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("/mag2_amplitude_vector", 10);
-		mag3_amplitude_vector_pub_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("/mag3_amplitude_vector", 10);
-
-	} else {
-
-		mag0_phasor_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasor>("/mag0_phasor", 10);
-		mag1_phasor_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasor>("/mag1_phasor", 10);
-		mag2_phasor_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasor>("/mag2_phasor", 10);
-		mag3_phasor_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasor>("/mag3_phasor", 10);
-
-	}
+	mag_phasors_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasors3D>("mag_phasors", 10);
 
 }
 
 void SineReconstructorNode::magMeasurementsCallback(const mag_pl_detector::msg::MagMeasurements::SharedPtr msg) {
 
-	MagMeasurementsClass mag_meas(*msg, fixed_phase_, true);
+	MagMeasurementsClass mag_meas(*msg, R_drone_to_mags_, fixed_phase_, true, max_n_samples_);
 
 	sine_reconstruction_pub_->publish(mag_meas.GetMsg());
 
-	if (fixed_phase_) {
+	mag_pl_detector::msg::MagneticPhasors3D phasors_msg = mag_meas.GetPhasorsMsg(this->get_clock()->now());
 
-		std::vector<geometry_msgs::msg::Vector3Stamped> ampl_msgs = mag_meas.GetAmplitudeVectorMsgs(this->get_clock()->now());
+	mag_phasors_pub_->publish(phasors_msg);
 
-		mag0_amplitude_vector_pub_->publish(ampl_msgs[0]);
-		mag1_amplitude_vector_pub_->publish(ampl_msgs[1]);
-		mag2_amplitude_vector_pub_->publish(ampl_msgs[2]);
-		mag3_amplitude_vector_pub_->publish(ampl_msgs[3]);
+}
 
-	} else {
+void SineReconstructorNode::fetchStaticTransforms() {
 
-		std::vector<mag_pl_detector::msg::MagneticPhasor> phasor_msgs = mag_meas.GetPhasorMsgs(this->get_clock()->now());
+	for (int i = 0; i < 4; i++) {
 
-		mag0_phasor_pub_->publish(phasor_msgs[0]);
-		mag1_phasor_pub_->publish(phasor_msgs[1]);
-		mag2_phasor_pub_->publish(phasor_msgs[2]);
-		mag3_phasor_pub_->publish(phasor_msgs[3]);
+		geometry_msgs::msg::TransformStamped mag_tf;
+
+		while(true) {
+
+			try {
+
+				mag_tf = tf_buffer_->lookupTransform("drone", mag_frame_names_[i], tf2::TimePointZero);
+
+				break;
+
+			} catch(tf2::TransformException & ex) {
+
+				//RCLCPP_INFO(this->get_logger(), "Could not get mag transform, trying again...");
+
+			}
+		}
+
+		quat_t mag_quat(
+			mag_tf.transform.rotation.w,
+			mag_tf.transform.rotation.x,
+			mag_tf.transform.rotation.y,
+			mag_tf.transform.rotation.z
+		);
+
+		R_drone_to_mags_[i] = quatToMat(mag_quat);
+
+		v_drone_to_mags_[i](0) = mag_tf.transform.translation.x;
+		v_drone_to_mags_[i](1) = mag_tf.transform.translation.x;
+		v_drone_to_mags_[i](2) = mag_tf.transform.translation.x;
 
 	}
 
 }
+
 
 int main(int argc, char *argv[]) {
 

@@ -15,6 +15,12 @@ def generate_launch_description():
         'params.yaml'
     )
 
+    camera = Node(
+        package="usb_cam",
+        executable="usb_cam_node_exe",
+        parameters=[config]
+    )
+
     physical_setup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -36,15 +42,23 @@ def generate_launch_description():
         parameters=[config]
     )
 
-    camera = Node(
-        package="usb_cam",
-        executable="usb_cam_node_exe",
+    pl_dir_computer = Node(
+        package="mag_pl_detector",
+        executable="pl_dir_computer",
+        parameters=[config]
+    )
+
+    pl_dir_estimator = Node(
+        package="mag_pl_detector",
+        executable="pl_dir_estimator",
         parameters=[config]
     )
 
     return LaunchDescription([
+        #camera,
         physical_setup_launch,
-        mag_sample_publisher,
+        #mag_sample_publisher,
         sine_reconstructor,
-        camera
+        pl_dir_computer,
+        pl_dir_estimator,
     ])

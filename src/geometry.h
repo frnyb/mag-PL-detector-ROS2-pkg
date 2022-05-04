@@ -15,8 +15,10 @@ typedef Eigen::Vector3f point_t;
 typedef Eigen::Vector3f orientation_t;
 
 typedef Eigen::Vector4f quat_t;
+typedef Eigen::Vector4d quatd_t;
 
 typedef Eigen::Vector3f vector_t;
+typedef Eigen::Vector3d vectord_t;
 
 typedef struct {
 
@@ -33,6 +35,7 @@ typedef struct {
 } plane_t;
 
 typedef Eigen::Matrix3f rotation_matrix_t;
+typedef Eigen::Matrix3d rotation_matrixd_t;
 
 typedef Eigen::Matrix4f transform_t;
 

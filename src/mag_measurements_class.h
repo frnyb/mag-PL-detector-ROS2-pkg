@@ -13,7 +13,9 @@
 
 #include "mag_pl_detector/msg/mag_measurements.hpp"
 #include "mag_pl_detector/msg/sine_reconstruction.hpp"
-#include "mag_pl_detector/msg/magnetic_phasor.hpp"
+#include "mag_pl_detector/msg/magnetic_phasors3_d.hpp"
+
+#include "geometry.h"
 
 /*********************************************************************************
  * Class
@@ -21,18 +23,24 @@
 
 class MagMeasurementsClass {
 public:
-	MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase, bool invert_z);
+	MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, rotation_matrix_t R_drone_to_mags[4],
+		bool fixed_phase, bool invert_z, int max_n_samples);
 
 	mag_pl_detector::msg::SineReconstruction GetMsg();
-	std::vector<geometry_msgs::msg::Vector3Stamped> GetAmplitudeVectorMsgs(builtin_interfaces::msg::Time stamp);
-	std::vector<mag_pl_detector::msg::MagneticPhasor> GetPhasorMsgs(builtin_interfaces::msg::Time stamp);
+	mag_pl_detector::msg::MagneticPhasors3D GetPhasorsMsg(builtin_interfaces::msg::Time stamp);
 
 private:
+	const std::string mag_frame_names_[4] = {"mag0", "mag1", "mag2", "mag3"};
+
 	Eigen::MatrixXd mag_samples_;
 	Eigen::MatrixXd mag_times_;
 
+	rotation_matrix_t R_drone_to_mags_[4];
+
 	bool fixed_phase_;
 	bool invert_z_;
+
+	int max_n_samples_;
 
 	int n_samples_;
 	int phase_ref_idx_;

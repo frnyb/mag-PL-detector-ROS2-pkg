@@ -8,11 +8,20 @@
  * Methods
  *********************************************************************************/
 
-MagMeasurementsClass::MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, bool fixed_phase, bool invert_z) :
+MagMeasurementsClass::MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements measurements_msg, rotation_matrix_t R_drone_to_mags[4],
+	bool fixed_phase, bool invert_z, int max_n_samples) :
 					mag_samples_(measurements_msg.count, 12), mag_times_(measurements_msg.count, 12) {
 
 	fixed_phase_ = fixed_phase;
 	invert_z_ = invert_z;
+
+	max_n_samples_ = max_n_samples;
+
+	for (int i = 0; i < 4; i++) {
+
+		R_drone_to_mags_[i] = R_drone_to_mags[i];
+
+	}
 
 	loadData(measurements_msg);
 
@@ -32,6 +41,12 @@ MagMeasurementsClass::MagMeasurementsClass(mag_pl_detector::msg::MagMeasurements
 void MagMeasurementsClass::loadData(mag_pl_detector::msg::MagMeasurements measurements_msg) {
 
 	n_samples_ = measurements_msg.count;
+
+	if (n_samples_ > max_n_samples_) {
+
+		n_samples_ = max_n_samples_;
+
+	}
 
 	Eigen::VectorXd max_vals(12, 1);
 	Eigen::VectorXd min_vals(12, 1);
@@ -216,102 +231,43 @@ mag_pl_detector::msg::SineReconstruction MagMeasurementsClass::GetMsg() {
 	
 }
 
-std::vector<geometry_msgs::msg::Vector3Stamped> MagMeasurementsClass::GetAmplitudeVectorMsgs(builtin_interfaces::msg::Time stamp) {
+mag_pl_detector::msg::MagneticPhasors3D MagMeasurementsClass::GetPhasorsMsg(builtin_interfaces::msg::Time stamp) {
 
-	geometry_msgs::msg::Vector3Stamped mag0_msg;
-	mag0_msg.header.frame_id = "mag0";
-	mag0_msg.header.stamp = stamp;
-	mag0_msg.vector.x = amplitudes_[0];
-	mag0_msg.vector.y = amplitudes_[1];
-	mag0_msg.vector.z = amplitudes_[2];
+	std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors;
 
-	geometry_msgs::msg::Vector3Stamped mag1_msg;
-	mag1_msg.header.frame_id = "mag1";
-	mag1_msg.header.stamp = stamp;
-	mag1_msg.vector.x = amplitudes_[3];
-	mag1_msg.vector.y = amplitudes_[4];
-	mag1_msg.vector.z = amplitudes_[5];
+	for (int i = 0; i < 4; i++) {
 
-	geometry_msgs::msg::Vector3Stamped mag2_msg;
-	mag2_msg.header.frame_id = "mag2";
-	mag2_msg.header.stamp = stamp;
-	mag2_msg.vector.x = amplitudes_[6];
-	mag2_msg.vector.y = amplitudes_[7];
-	mag2_msg.vector.z = amplitudes_[8];
+		vector_t ampl(
+			amplitudes_[i*3],
+			amplitudes_[i*3+1],
+			amplitudes_[i*3+2]
+		);
 
-	geometry_msgs::msg::Vector3Stamped mag3_msg;
-	mag3_msg.header.frame_id = "mag3";
-	mag3_msg.header.stamp = stamp;
-	mag3_msg.vector.x = amplitudes_[9];
-	mag3_msg.vector.y = amplitudes_[10];
-	mag3_msg.vector.z = amplitudes_[11];
+		ampl = R_drone_to_mags_[i] * ampl;
 
-	if (invert_z_) {
-		mag0_msg.vector.z = - mag0_msg.vector.z;
-		mag1_msg.vector.z = - mag1_msg.vector.z;
-		mag2_msg.vector.z = - mag2_msg.vector.z;
-		mag3_msg.vector.z = - mag3_msg.vector.z;
+		vector_t norm_ampl = ampl / ampl.norm();
+
+		mag_pl_detector::msg::MagneticPhasor3D mag_msg;
+		//mag_msg.header.frame_id = mag_frame_names_[i];
+		mag_msg.header.frame_id = "drone";
+		mag_msg.header.stamp = stamp;
+		mag_msg.amplitudes.x = ampl(0);
+		mag_msg.amplitudes.y = ampl(1);
+		mag_msg.amplitudes.z = ampl(2);
+		mag_msg.normalized_amplitudes.x = norm_ampl(0);
+		mag_msg.normalized_amplitudes.y = norm_ampl(1);
+		mag_msg.normalized_amplitudes.z = norm_ampl(2);
+		mag_msg.phases.x = phases_[0];
+		mag_msg.phases.y = phases_[1];
+		mag_msg.phases.z = phases_[2];
+
+		phasors.push_back(mag_msg);
+
 	}
-	
 
-	std::vector<geometry_msgs::msg::Vector3Stamped> vector;
-	vector.push_back(mag0_msg);
-	vector.push_back(mag1_msg);
-	vector.push_back(mag2_msg);
-	vector.push_back(mag3_msg);
+	mag_pl_detector::msg::MagneticPhasors3D msg;
+	msg.phasors = phasors;
 
-	return vector;
-
-}
-
-std::vector<mag_pl_detector::msg::MagneticPhasor> MagMeasurementsClass::GetPhasorMsgs(builtin_interfaces::msg::Time stamp) {
-
-	mag_pl_detector::msg::MagneticPhasor mag0_msg;
-	mag0_msg.header.frame_id = "mag0";
-	mag0_msg.header.stamp = stamp;
-	mag0_msg.amplitudes.x = amplitudes_[0];
-	mag0_msg.amplitudes.y = amplitudes_[1];
-	mag0_msg.amplitudes.z = amplitudes_[2];
-	mag0_msg.phases.x = phases_[0];
-	mag0_msg.phases.y = phases_[1];
-	mag0_msg.phases.z = phases_[2];
-
-	mag_pl_detector::msg::MagneticPhasor mag1_msg;
-	mag1_msg.header.frame_id = "mag1";
-	mag1_msg.header.stamp = stamp;
-	mag1_msg.amplitudes.x = amplitudes_[3];
-	mag1_msg.amplitudes.y = amplitudes_[4];
-	mag1_msg.amplitudes.z = amplitudes_[5];
-	mag1_msg.phases.x = phases_[3];
-	mag1_msg.phases.y = phases_[4];
-	mag1_msg.phases.z = phases_[5];
-
-	mag_pl_detector::msg::MagneticPhasor mag2_msg;
-	mag2_msg.header.frame_id = "mag2";
-	mag2_msg.header.stamp = stamp;
-	mag2_msg.amplitudes.x = amplitudes_[6];
-	mag2_msg.amplitudes.y = amplitudes_[7];
-	mag2_msg.amplitudes.z = amplitudes_[8];
-	mag2_msg.phases.x = phases_[6];
-	mag2_msg.phases.y = phases_[7];
-	mag2_msg.phases.z = phases_[8];
-
-	mag_pl_detector::msg::MagneticPhasor mag3_msg;
-	mag3_msg.header.frame_id = "mag3";
-	mag3_msg.header.stamp = stamp;
-	mag3_msg.amplitudes.x = amplitudes_[9];
-	mag3_msg.amplitudes.y = amplitudes_[10];
-	mag3_msg.amplitudes.z = amplitudes_[11];
-	mag3_msg.phases.x = phases_[9];
-	mag3_msg.phases.y = phases_[10];
-	mag3_msg.phases.z = phases_[11];
-
-	std::vector<mag_pl_detector::msg::MagneticPhasor> vector;
-	vector.push_back(mag0_msg);
-	vector.push_back(mag1_msg);
-	vector.push_back(mag2_msg);
-	vector.push_back(mag3_msg);
-
-	return vector;
+	return msg;
 
 }

@@ -22,7 +22,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 	this->get_parameter("bram_size", bram_size);
 	this->get_parameter("n_periods", n_periods);
 
-	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("/mag_measurements", 10);
+	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("mag_measurements", 10);
 
 	msf = new SlidingWindowMagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
 

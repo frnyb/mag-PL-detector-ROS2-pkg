@@ -18,7 +18,7 @@ MagSampleFilePublisherNode::MagSampleFilePublisherNode(const std::string & node_
 
 	msg_ = loadMsg(filename);
 
-	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("/mag_measurements", 10);
+	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("mag_measurements", 10);
 
 	timer_ = this->create_wall_timer(100ms, std::bind(&MagSampleFilePublisherNode::magTimerCallback, this));
 

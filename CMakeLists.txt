@@ -18,6 +18,8 @@ endif()
 include_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 link_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 
+include_directories("/usr/local/include")
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -32,7 +34,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MagMeasurement.msg"
   "msg/MagMeasurements.msg"
   "msg/SineReconstruction.msg"
-  "msg/MagneticPhasor.msg"
+  "msg/MagneticPhasor3D.msg"
+  "msg/MagneticPhasors3D.msg"
+  "msg/PowerlinePosesComputationResult.msg"
   DEPENDENCIES std_msgs geometry_msgs
 )
 
@@ -66,11 +70,14 @@ install(TARGETS mag_sample_file_publisher DESTINATION lib/${PROJECT_NAME})
 add_executable(sine_reconstructor
   src/sine_reconstructor.cpp
   src/mag_measurements_class.cpp
+  src/geometry.cpp
 )
 ament_target_dependencies(sine_reconstructor
   rclcpp
   Eigen3
   geometry_msgs
+  tf2
+  tf2_ros
 )
 rosidl_target_interfaces(sine_reconstructor
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
@@ -85,8 +92,6 @@ ament_target_dependencies(pl_dir_computer
   rclcpp
   Eigen3
   geometry_msgs
-  tf2
-  tf2_ros
 )
 rosidl_target_interfaces(pl_dir_computer
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
@@ -101,11 +106,30 @@ ament_target_dependencies(pl_dir_estimator
   rclcpp
   Eigen3
   geometry_msgs
+  tf2
+  tf2_ros
 )
 rosidl_target_interfaces(pl_dir_estimator
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
 install(TARGETS pl_dir_estimator DESTINATION lib/${PROJECT_NAME})
+
+add_executable(pl_positions_computer
+  src/pl_positions_computer.cpp
+  src/geometry.cpp
+)
+ament_target_dependencies(pl_positions_computer
+  rclcpp
+  Eigen3
+  geometry_msgs
+  tf2
+  tf2_ros
+)
+target_link_libraries(pl_positions_computer nlopt)
+rosidl_target_interfaces(pl_positions_computer
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS pl_positions_computer DESTINATION lib/${PROJECT_NAME})
 
 # Install Python modules
 ament_python_install_package(${PROJECT_NAME})
