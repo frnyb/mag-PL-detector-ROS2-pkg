@@ -16,6 +16,9 @@ MagSampleFilePublisherNode::MagSampleFilePublisherNode(const std::string & node_
 
 	this->get_parameter("filename", filename);
 
+	RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%filename: %s%s%s",
+		node_name, std::endl, filename, std::endl, std::endl);
+
 	msg_ = loadMsg(filename);
 
 	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("mag_measurements", 10);

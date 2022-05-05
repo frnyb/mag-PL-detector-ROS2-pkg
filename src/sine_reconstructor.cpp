@@ -18,6 +18,9 @@ SineReconstructorNode::SineReconstructorNode(const std::string & node_name,
 	this->declare_parameter<int>("max_n_samples", 800);
 	this->get_parameter("max_n_samples", max_n_samples_);
 
+	RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%sfixed_phase: %s%smax_n_samples: %d%s%s",
+		node_name, std::endl, std::to_string(fixed_phase_), std::endl, max_n_samples_, std::endl, std::endl);
+
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
