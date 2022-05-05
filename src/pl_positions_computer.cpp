@@ -23,8 +23,11 @@ PowerlinePositionsComputerNode::PowerlinePositionsComputerNode(const std::string
     this->declare_parameter<double>("xyz_max", 10);
     this->get_parameter("xyz_max", xyz_max_);
 
-    // RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%sI_min: %d %sI_max: %d %sxyz_min: %d %sxyz_max: %d %s%s",
-	// 	node_name, std::endl, I_min_, std::endl, I_max_, std::endl, xyz_min_, std::endl, xyz_max_, std::endl, std::endl);
+    RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:", node_name);
+    RCLCPP_INFO(this->get_logger(), "I_min: %f", I_min_);
+    RCLCPP_INFO(this->get_logger(), "I_max: %f", I_max_);
+    RCLCPP_INFO(this->get_logger(), "xyz_min: %f", xyz_min_);
+    RCLCPP_INFO(this->get_logger(), "xyz_min: %f", xyz_max_);
 
     lb_.push_back(I_min_);
     ub_.push_back(I_max_);
