@@ -55,9 +55,9 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        #camera,
+        camera,
         physical_setup_launch,
-        #mag_sample_publisher,
+        mag_sample_publisher,
         sine_reconstructor,
         pl_dir_computer,
         pl_dir_estimator,

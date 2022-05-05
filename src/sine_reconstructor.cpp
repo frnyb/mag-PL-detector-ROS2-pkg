@@ -24,7 +24,7 @@ SineReconstructorNode::SineReconstructorNode(const std::string & node_name,
 	fetchStaticTransforms();
 
     mag_measurements_sub_ = this->create_subscription<mag_pl_detector::msg::MagMeasurements>(
-        "/mag_measurements", 
+        "/mag_sample_publisher/mag_measurements", 
 		10, std::bind(&SineReconstructorNode::magMeasurementsCallback, this, std::placeholders::_1));
 
 	sine_reconstruction_pub_ = this->create_publisher<mag_pl_detector::msg::SineReconstruction>("sine_reconstruction", 10);
