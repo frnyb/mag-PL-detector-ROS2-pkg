@@ -22,8 +22,8 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 	this->get_parameter("bram_size", bram_size);
 	this->get_parameter("n_periods", n_periods);
 
-    RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%sbram_uio_number: %d %sbram_size: %d %sn_periods: %d %s%s",
-		node_name, std::endl, bram_uio_number, std::endl, bram_size, std::endl, n_periods, std::endl, std::endl);
+    // RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%sbram_uio_number: %d %sbram_size: %d %sn_periods: %d %s%s",
+	// 	node_name, std::endl, bram_uio_number, std::endl, bram_size, std::endl, n_periods, std::endl, std::endl);
 
 	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("mag_measurements", 10);
 
