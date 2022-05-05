@@ -1,9 +1,4 @@
-drone_frame_broadcaster:
-  ros__parameters:
-    world_frame_id: "world"
-    drone_frame_id: "drone"
-
-/**:
+usb_cam:
     ros__parameters:
       video_device: "/dev/video0"
       framerate: 10.0
@@ -14,3 +9,41 @@ drone_frame_broadcaster:
       image_height: 480
       camera_name: "test_camera"
       camera_info_url: "package://usb_cam/config/camera_info.yaml"
+
+drone_frame_broadcaster:
+  ros__parameters:
+    world_frame_id: "world"
+    drone_frame_id: "drone"
+
+mag_sample_file_publisher:
+  ros__parameters:
+    filename: "~/mag_samples.txt"
+
+mag_sample_publisher:
+  ros__parameters:
+    bram_uio_number: 1
+    bram_size: 16384
+    n_periods: 20
+
+sine_reconstructor:
+  ros__parameters:
+    max_n_samples: 2000
+
+pl_direction_computer:
+  ros__parameters:
+    vector_parallel_dot_prod_thresh: 0.95
+
+pl_dir_estimator:
+  ros__parameters:
+    kf_q: 0.999
+    kf_r: 0.001
+
+pl_positions_computer:
+  ros__parameters:
+    I_min: 100
+    I_max: 1000
+    xyz_min: -10
+    xyz_max: 10
+
+
+
