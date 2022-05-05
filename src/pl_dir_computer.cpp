@@ -27,8 +27,9 @@ PowerlineDirectionComputerNode::PowerlineDirectionComputerNode(const std::string
 	this->declare_parameter<float>("vector_parallel_dot_prod_thresh", 0.95);
 	this->get_parameter("vector_parallel_dot_prod_thresh", parallel_dot_prod_thresh_);
 
-    RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%fixed_phase: %s %svector_parallel_dot_prod_thresh: %f %s%s",
-		node_name, std::endl, std::to_string(fixed_phase_), std::endl, parallel_dot_prod_thresh_, std::endl, std::endl);
+    RCLCPP_INFO(this->get_logger(), "Starting %s ");
+	// with parameters:%fixed_phase: %s %svector_parallel_dot_prod_thresh: %f %s%s",
+		// node_name, std::endl, std::to_string(fixed_phase_), std::endl, parallel_dot_prod_thresh_, std::endl, std::endl);
 
 	mag_phasors_sub_ = this->create_subscription<mag_pl_detector::msg::MagneticPhasors3D>(
 		"/sine_reconstructor/mag_phasors", 10, std::bind(&PowerlineDirectionComputerNode::magPhasorsCallback, this, std::placeholders::_1));
