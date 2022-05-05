@@ -20,8 +20,8 @@ PowerlineDirectionEstimatorNode::PowerlineDirectionEstimatorNode(const std::stri
 	this->declare_parameter<float>("kf_r", 1-kf_q_);
 	this->get_parameter("kf_r", kf_r_);
 
-    RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%fixed_phase: %s %skf_q: %f %skf_r: %f %s%s",
-		node_name, std::endl, std::to_string(fixed_phase_), std::endl, kf_q_, std::endl, kf_r_, std::endl, std::endl);
+    // RCLCPP_INFO(this->get_logger(), "Starting %s with parameters:%fixed_phase: %s %skf_q: %f %skf_r: %f %s%s",
+	// 	node_name, std::endl, std::to_string(fixed_phase_), std::endl, kf_q_, std::endl, kf_r_, std::endl, std::endl);
 
 	pl_direction_raw_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
 		"/pl_dir_computer/powerline_direction_raw", 10, std::bind(&PowerlineDirectionEstimatorNode::powerlineDirectionRawCallback, this, std::placeholders::_1));
