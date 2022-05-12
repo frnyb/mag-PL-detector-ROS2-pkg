@@ -18,6 +18,8 @@ endif()
 include_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 link_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 
+include_directories(include/cppopt/include)
+
 include_directories("/usr/local/include")
 
 # find dependencies

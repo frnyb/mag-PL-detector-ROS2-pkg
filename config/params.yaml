@@ -1,3 +1,13 @@
+sine_reconstruction_publisher:
+  ros__parameters:
+    bram_uio_number: 1
+    bram_size: 4096
+
+mag_samples_publisher:
+  ros__parameters:
+    bram_uio_number: 0
+    bram_size: 16384
+
 /**:
   ros__parameters:
     video_device: "/dev/video0"
@@ -15,8 +25,6 @@
 
     filename: "~/mag_samples.txt"
 
-    bram_uio_number: 1
-    bram_size: 16384
     n_periods: 20
 
     max_n_samples: 200

@@ -4,3 +4,6 @@
 [submodule "include/SlidingWindowMagSampleFetcher_cpp"]
 	path = include/SlidingWindowMagSampleFetcher_cpp
 	url = https://github.com/frnyb/SlidingWindowMagSampleFetcher_cpp.git
+[submodule "include/cppopt"]
+	path = include/cppopt
+	url = https://github.com/cheind/cppopt.git
