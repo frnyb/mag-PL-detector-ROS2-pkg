@@ -11,7 +11,7 @@ SineReconstructionPublisherNode::SineReconstructionPublisherNode(const std::stri
 				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
-	this->declare_parameter<int>("bram_size", 4*4096);
+	this->declare_parameter<int>("bram_size", 8192);
 
 	int bram_uio_number;
 	int bram_size;
@@ -19,9 +19,14 @@ SineReconstructionPublisherNode::SineReconstructionPublisherNode(const std::stri
 	this->get_parameter("bram_uio_number", bram_uio_number);
 	this->get_parameter("bram_size", bram_size);
 
-    RCLCPP_INFO(this->get_logger(), "Starting %s with parameters: ", node_name);
+	RCLCPP_INFO(this->get_logger(), "Starting %s with parameters: ", node_name);
 	RCLCPP_INFO(this->get_logger(), "bram_uio_number: %d", bram_uio_number); 
 	RCLCPP_INFO(this->get_logger(), "bram_size: %d", bram_size); 
+
+    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+    transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
+	fetchStaticTransforms();
 
 	sine_reconstruction_pub_ = this->create_publisher<mag_pl_detector::msg::SineReconstruction>("sine_reconstruction", 10);
 	mag_phasors_pub_ = this->create_publisher<mag_pl_detector::msg::MagneticPhasors3D>("mag_phasors", 10);
