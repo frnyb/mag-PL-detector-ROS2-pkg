@@ -79,6 +79,8 @@ void SineReconstructionPublisherNode::fetchStaticTransforms() {
 
 void SineReconstructionPublisherNode::fetchSines() {
 
+	RCLCPP_INFO(this->get_logger(), "1"); 
+
 	if (first_run_) {
 
 		(*bram)[0] = 1;
@@ -92,6 +94,8 @@ void SineReconstructionPublisherNode::fetchSines() {
 		sleep_rate.sleep();
 
 	}
+
+	RCLCPP_INFO(this->get_logger(), "2"); 
 
 	std::vector<float> amplitudes;
 	std::vector<float> phases;
@@ -109,9 +113,13 @@ void SineReconstructionPublisherNode::fetchSines() {
 
 	}
 
+	RCLCPP_INFO(this->get_logger(), "3"); 
+
 	(*bram)[0] = 1;
 
 	publishSines(amplitudes, phases);
+
+	RCLCPP_INFO(this->get_logger(), "4"); 
 
 }
 
