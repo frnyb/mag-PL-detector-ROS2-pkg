@@ -13,6 +13,13 @@
 
 using namespace std::chrono_literals;
 
+
+
+
+#define N_PERIODS 10
+#define N_SAMPLES_PER_PERIOD 8
+#define N_SAMPLES N_PERIODS*N_SAMPLES_PER_PERIOD
+
 /*********************************************************************************
  * Class
  *********************************************************************************/

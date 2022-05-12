@@ -10,7 +10,7 @@
 MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, const std::string & node_namespace) 
 				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
-	this->declare_parameter<int>("bram_uio_number", 1);
+	this->declare_parameter<int>("bram_uio_number", 0);
 	this->declare_parameter<int>("bram_size", 4*4096);
 	this->declare_parameter<int>("n_periods", 20);
 
@@ -51,11 +51,13 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	if (first_run_) {
 
-		while(!msf->Start()) {
+		//while(!msf->Start()) {
 
-			sleep_rate.sleep();
+		//	sleep_rate.sleep();
 
-		}
+		//}
+
+		bram[0] = 1;
 
 		first_run_ = false;
 
@@ -73,10 +75,22 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	std::vector<MagSample> samples;
 	
-	while(!msf->GetSamples(&samples)) {
+	//while(!msf->GetSamples(&samples)) {
+
+	//	sleep_rate.sleep();
+
+	//}
+
+	while(bram[0] != 0) {
 
 		sleep_rate.sleep();
 
+	}
+
+	for (int i = 0; i < N_SAMPLES; i++) {
+		MagSample sample(bram, 1+i*12);
+
+		samples.push_back(sample);
 	}
 
     //auto finished_time = std::chrono::steady_clock::now();
@@ -95,11 +109,13 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//}
 
-	while(!msf->Start()) {
+	//while(!msf->Start()) {
 
-		sleep_rate.sleep();
+	//	sleep_rate.sleep();
 
-	}
+	//}
+
+	bram[0] = 1;
 
 	//publishSamples();
 
