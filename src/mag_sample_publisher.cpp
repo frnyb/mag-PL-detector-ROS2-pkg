@@ -41,7 +41,7 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	first_run_ = true;
 
-	fetch_samples_timer_ = this->create_wall_timer(20ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
+	fetch_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::fetchSamples, this));
 	//publish_samples_timer_ = this->create_wall_timer(10ms, std::bind(&MagSamplePublisherNode::publishSamples, this));
 
 }
