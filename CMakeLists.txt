@@ -19,6 +19,8 @@ include_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 link_directories(include/SlidingWindowMagSampleFetcher_cpp/src)
 
 include_directories(include/cppopt/include)
+include_directories(include/BRAM-uio-driver/src)
+link_directories(include/BRAM-uio-driver/src)
 
 include_directories("/usr/local/include")
 
@@ -68,6 +70,23 @@ rosidl_target_interfaces(mag_sample_file_publisher
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )
 install(TARGETS mag_sample_file_publisher DESTINATION lib/${PROJECT_NAME})
+
+add_executable(sine_reconstruction_publisher
+  src/sine_reconstruction_publisher.cpp
+  include/BRAM-uio-driver/src/bram_uio.cpp 
+  src/geometry.cpp
+)
+ament_target_dependencies(sine_reconstruction_publisher
+  rclcpp
+  Eigen3
+  geometry_msgs
+  tf2
+  tf2_ros
+)
+rosidl_target_interfaces(sine_reconstruction_publisher
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS sine_reconstruction_publisher DESTINATION lib/${PROJECT_NAME})
 
 add_executable(sine_reconstructor
   src/sine_reconstructor.cpp

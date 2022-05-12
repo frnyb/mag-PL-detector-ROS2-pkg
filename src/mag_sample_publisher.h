@@ -31,7 +31,8 @@ private:
 
     mag_pl_detector::msg::MagMeasurements msg_;
 
-    SlidingWindowMagSampleFetcher *msf;
+    //SlidingWindowMagSampleFetcher *msf;
+    BRAM *bram;
 	rclcpp::Rate sleep_rate;
     bool first_run_;
 
