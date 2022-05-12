@@ -36,6 +36,8 @@ SineReconstructionPublisherNode::SineReconstructionPublisherNode(const std::stri
 
 	fetch_sines_timer_ = this->create_wall_timer(10ms, std::bind(&SineReconstructionPublisherNode::fetchSines, this));
 
+	RCLCPP_INFO(this->get_logger(), "Running SineReconstructionPublisher"); 
+
 }
 
 void SineReconstructionPublisherNode::fetchStaticTransforms() {
