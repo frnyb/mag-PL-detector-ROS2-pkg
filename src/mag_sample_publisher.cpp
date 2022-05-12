@@ -29,15 +29,16 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	mag_measurements_publisher_ = this->create_publisher<mag_pl_detector::msg::MagMeasurements>("mag_measurements", 10);
 
-	msf = new SlidingWindowMagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
+	//msf = new SlidingWindowMagSampleFetcher((unsigned int)bram_uio_number, (unsigned int)bram_size);
 
+	bram = new BRAM((unsigned int)bram_uio_number, (unsigned int)bram_size);
 	n_periods_ = n_periods;
 
-	while(!msf->Start(n_periods)) {
+	//while(!msf->Start(n_periods)) {
 
-		sleep_rate.sleep();
+	//	sleep_rate.sleep();
 
-	}
+	//}
 
 	first_run_ = true;
 
