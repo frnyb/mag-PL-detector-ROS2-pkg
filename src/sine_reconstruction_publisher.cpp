@@ -11,7 +11,7 @@ SineReconstructionPublisherNode::SineReconstructionPublisherNode(const std::stri
 				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
-	this->declare_parameter<int>("bram_size", 8192);
+	this->declare_parameter<int>("bram_size", 16384);
 
 	int bram_uio_number;
 	int bram_size;

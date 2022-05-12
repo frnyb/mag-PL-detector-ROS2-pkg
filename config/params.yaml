@@ -1,12 +1,12 @@
 sine_reconstruction_publisher:
   ros__parameters:
     bram_uio_number: 1
-    bram_size: 4096
+    bram_size: 16384
 
 mag_sample_publisher:
   ros__parameters:
     bram_uio_number: 0
-    bram_size: 8192
+    bram_size: 16384
 
 /**:
   ros__parameters:
