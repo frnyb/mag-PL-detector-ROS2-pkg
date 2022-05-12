@@ -79,13 +79,13 @@ void SineReconstructionPublisherNode::fetchSines() {
 
 	if (first_run_) {
 
-		bram[0] = 1;
+		(*bram)[0] = 1;
 
 		first_run_ = false;
 
 	}
 
-	while(bram[0] != 0) {
+	while((*bram)[0] != 0) {
 
 		sleep_rate.sleep();
 
@@ -96,8 +96,8 @@ void SineReconstructionPublisherNode::fetchSines() {
 
 	for (int i = 0; i < 12; i++) {
 
-		uint32_t amp_val = bram[1+i];
-		uint32_t phase_val = bram[13+i];
+		uint32_t amp_val = (*bram)[1+i];
+		uint32_t phase_val = (*bram)[13+i];
 
 		float amplitude = *((float *)amp_val);
 		float phase = *((float *)phase_val);
@@ -107,7 +107,7 @@ void SineReconstructionPublisherNode::fetchSines() {
 
 	}
 
-	bram[0] = 1;
+	(*bram)[0] = 1;
 
 	publishSines(amplitudes, phases);
 

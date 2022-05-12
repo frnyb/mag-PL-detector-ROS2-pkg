@@ -57,7 +57,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 		//}
 
-		bram[0] = 1;
+		(*bram)[0] = 1;
 
 		first_run_ = false;
 
@@ -81,7 +81,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//}
 
-	while(bram[0] != 0) {
+	while((*bram)[0] != 0) {
 
 		sleep_rate.sleep();
 
@@ -115,7 +115,7 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	//}
 
-	bram[0] = 1;
+	(*bram)[0] = 1;
 
 	//publishSamples();
 
