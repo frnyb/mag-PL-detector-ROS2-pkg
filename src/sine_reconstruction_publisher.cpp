@@ -11,7 +11,7 @@ SineReconstructionPublisherNode::SineReconstructionPublisherNode(const std::stri
 				: rclcpp::Node(node_name, node_namespace), sleep_rate(1000000) {
 	
 	this->declare_parameter<int>("bram_uio_number", 1);
-	this->declare_parameter<int>("bram_size", 16384);
+	this->declare_parameter<int>("bram_size", 4096);
 
 	int bram_uio_number;
 	int bram_size;
@@ -79,8 +79,6 @@ void SineReconstructionPublisherNode::fetchStaticTransforms() {
 
 void SineReconstructionPublisherNode::fetchSines() {
 
-	RCLCPP_INFO(this->get_logger(), "1"); 
-
 	if (first_run_) {
 
 		(*bram)[0] = 1;
@@ -95,8 +93,6 @@ void SineReconstructionPublisherNode::fetchSines() {
 
 	}
 
-	RCLCPP_INFO(this->get_logger(), "2"); 
-
 	std::vector<float> amplitudes;
 	std::vector<float> phases;
 
@@ -105,21 +101,17 @@ void SineReconstructionPublisherNode::fetchSines() {
 		uint32_t amp_val = (*bram)[1+i];
 		uint32_t phase_val = (*bram)[13+i];
 
-		float amplitude = *((float *)amp_val);
-		float phase = *((float *)phase_val);
+		float amplitude = *((float *)&amp_val);
+		float phase = *((float *)&phase_val);
 
 		amplitudes.push_back(amplitude);
 		phases.push_back(phase);
 
 	}
 
-	RCLCPP_INFO(this->get_logger(), "3"); 
-
 	(*bram)[0] = 1;
 
 	publishSines(amplitudes, phases);
-
-	RCLCPP_INFO(this->get_logger(), "4"); 
 
 }
 
