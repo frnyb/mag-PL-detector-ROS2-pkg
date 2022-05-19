@@ -131,7 +131,7 @@ void SineReconstructionPublisherNode::publishSines(std::vector<float> amplitudes
 		vector_t ampl(
 			amplitudes[i*3],
 			amplitudes[i*3+1],
-			amplitudes[i*3+2]
+			-amplitudes[i*3+2]
 		);
 
 		ampl = R_drone_to_mags_[i] * ampl;
