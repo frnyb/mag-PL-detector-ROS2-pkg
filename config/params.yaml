@@ -12,6 +12,25 @@ mag_sample_publisher:
       n_periods: 20
       sine_reconstruction_method: 2
 
+gain_controller:
+  gain_controller:
+    ros__parameters:
+      max_gain_step: 63
+      initial_gain_step: 0
+      control_gain_uio_ref_name: "controlgain"
+
+gain_computer:
+  gain_computer: 
+    ros__parameters:
+      max_gain_step: 63
+      initial_gain_step: 0
+      gain_per_step: 7.8125
+      amplitude_range: 2048.
+      target_norm_amplitude: 0.5
+      hysteresis_upper_norm_threshold: 0.75
+      hysteresis_lower_norm_threshold: 0.25
+
+
 pl_dir_computer:
   pl_dir_computer:
     ros__parameters:

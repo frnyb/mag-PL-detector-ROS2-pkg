@@ -10,3 +10,6 @@
 [submodule "include/BRAM-uio-driver"]
 	path = include/BRAM-uio-driver
 	url = https://github.com/DIII-SDU-Group/BRAM-uio-driver.git
+[submodule "include/PL-Mag-Sensor"]
+	path = include/PL-Mag-Sensor
+	url = https://github.com/frnyb/PL-Mag-Sensor.git
