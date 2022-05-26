@@ -65,7 +65,7 @@ void PowerlineDirectionEstimatorNode::powerlineDirectionRawCallback(geometry_msg
 void PowerlineDirectionEstimatorNode::kfPredict() {
 
     quat_t inv_last_drone_quat = quatInv(last_drone_quat_);
-    quat_t inv_drone_quat = quatInv(drone_quat_);
+    //quat_t inv_drone_quat = quatInv(drone_quat_);
     quat_t delta_drone_quat = quatMultiply(drone_quat_, inv_last_drone_quat);
 
     orientation_t delta_drone_eul = quatToEul(delta_drone_quat);

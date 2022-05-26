@@ -113,6 +113,8 @@ ament_target_dependencies(pl_dir_computer
   rclcpp
   Eigen3
   geometry_msgs
+  tf2
+  tf2_ros
 )
 rosidl_target_interfaces(pl_dir_computer
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
@@ -135,22 +137,38 @@ rosidl_target_interfaces(pl_dir_estimator
 )
 install(TARGETS pl_dir_estimator DESTINATION lib/${PROJECT_NAME})
 
-#add_executable(pl_positions_computer
-#  src/pl_positions_computer.cpp
-#  src/geometry.cpp
-#)
-#ament_target_dependencies(pl_positions_computer
-#  rclcpp
-#  Eigen3
-#  geometry_msgs
-#  tf2
-#  tf2_ros
-#)
-#target_link_libraries(pl_positions_computer nlopt)
-#rosidl_target_interfaces(pl_positions_computer
-#  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-#)
-#install(TARGETS pl_positions_computer DESTINATION lib/${PROJECT_NAME})
+add_executable(pl_positions_computer
+  src/pl_positions_computer.cpp
+  src/geometry.cpp
+)
+ament_target_dependencies(pl_positions_computer
+  rclcpp
+  Eigen3
+  geometry_msgs
+  tf2
+  tf2_ros
+)
+target_link_libraries(pl_positions_computer nlopt)
+rosidl_target_interfaces(pl_positions_computer
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS pl_positions_computer DESTINATION lib/${PROJECT_NAME})
+
+add_executable(pl_positions_estimator
+  src/pl_positions_estimator.cpp
+  src/geometry.cpp
+)
+ament_target_dependencies(pl_positions_estimator
+  rclcpp
+  Eigen3
+  geometry_msgs
+  tf2
+  tf2_ros
+)
+rosidl_target_interfaces(pl_positions_estimator
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+install(TARGETS pl_positions_estimator DESTINATION lib/${PROJECT_NAME})
 
 # Install Python modules
 ament_python_install_package(${PROJECT_NAME})

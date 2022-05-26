@@ -44,6 +44,9 @@ private:
     bool first_run_;
 
     int n_periods_;
+    int bram_data_offset_;
+
+    int sine_reconstruction_method_;
 
     std::vector<std::vector<MagSample>> mag_samples_window_;
 

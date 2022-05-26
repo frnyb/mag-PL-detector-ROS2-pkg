@@ -270,9 +270,9 @@ mag_pl_detector::msg::MagneticPhasors3D MagMeasurementsClass::GetPhasorsMsg(
     mag_msg.normalized_amplitudes.x = norm_ampl(0);
     mag_msg.normalized_amplitudes.y = norm_ampl(1);
     mag_msg.normalized_amplitudes.z = norm_ampl(2);
-    mag_msg.phases.x = phases_[0];
-    mag_msg.phases.y = phases_[1];
-    mag_msg.phases.z = phases_[2];
+    mag_msg.phases.x = phases_[i*3 + 0];
+    mag_msg.phases.y = phases_[i*3 + 1];
+    mag_msg.phases.z = phases_[i*3 + 2];
 
     phasors.push_back(mag_msg);
 

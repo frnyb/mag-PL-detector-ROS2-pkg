@@ -11,7 +11,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Geometry>
-#include <cppopt/gauss_newton.h>
+//#include <cppopt/gauss_newton.h>
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
@@ -23,6 +23,8 @@
 #include "mag_pl_detector/msg/magnetic_phasors3_d.hpp"
 #include "mag_pl_detector/msg/powerline_poses_computation_result.hpp"
 
+#include "cyclic_buffer.h"
+
 #include "geometry.h"
 
 using namespace std::chrono_literals;
@@ -31,15 +33,11 @@ using namespace std::chrono_literals;
  * Defines
  *********************************************************************************/
 
-typedef struct {
-    vectord_t D_Mjalpha_p[4];
-    Eigen::Matrix<double, 12, 1> D_V;
-    vectord_t D_alpha_n_norm;
-    double C;
-    bool inverted;
-    double epsilon;
-    double conversion_factor;
-} opt_data_t;
+typedef struct measurement_item_t {
+    std::vector<vector_t> W_vi;
+    std::vector<vector_t> W_D_Mj_p;
+    vector_t W_D_p;
+};
 
 /*********************************************************************************
  * Class
@@ -60,6 +58,10 @@ private:
     rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pl_dir_sub_;
 
     rclcpp::Publisher<mag_pl_detector::msg::PowerlinePosesComputationResult>::SharedPtr pl_poses_result_raw_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pl0_pose_raw_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pl1_pose_raw_pub_;
+
+    rclcpp::Subscription<mag_pl_detector::msg::PowerlinePosesComputationResult>::SharedPtr pl_poses_result_est_sub_;
 
     std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
@@ -69,45 +71,77 @@ private:
 	rotation_matrix_t R_drone_to_mags_[4];
 	vector_t v_drone_to_mags_[4];
 
-	quat_t drone_quat_;
-    quat_t pl_dir_quat_;
+    vector_t v_proj_mags_[4];
+    vector_t v_proj_norm_ampls_[4];
+    vector_t pl_unit_x_;
 
-    quat_t pl_dir_quat_holder_;
+    plane_t projection_plane_;
+
+	quat_t drone_quat_;
+    vector_t drone_vec_;
+
+    quat_t pl_dir_quat_;
+    quat_t pl_dir_quat_hold_;
 
     std::mutex odometry_mutex_;
     std::mutex pl_dir_mutex_;
+    std::mutex p_est_mutex_;
 
-    nlopt::opt optimizer_;
+    std::vector<geometry_msgs::msg::Pose> pl_poses_;
+    float pl_current_;
 
-    std::vector<double> x_;
-    double opt_f_;
+    vector_t D_vj_vecs_[4];
+    vector_t D_vj_norm_vecs_[4];
+
+    double I_;
+    vector_t p1_;
+    vector_t p2_;
+
+    CyclicBuffer<measurement_item_t, 20> measurements_buffer;
+    int buffer_size_;
+
+    double I_max_;
+    double cable_distance_max_;
+    int max_LMA_iterations_;
+    int max_weighting_iterations_;
+    double lambda_first_step_;
+    double lambda_increment_factor_;
+    double lambda_decrement_factor_;
+    double step_norm_success_threshold_;
+
+    bool publish_p1_, publish_p2_;
 
     const double mu_0_ = 0.00000125663;
     const double T_per_LSB_ = 7.8125e-7;
+    const double C_multiplier_ = mu_0_ / (2*M_PI);
 
-    double I_min_;
-    double I_max_;
-    double xyz_min_;
-    double xyz_max_;
-
-    std::vector<double> lb_;
-    std::vector<double> ub_;
-
-    opt_data_t opt_data_;
-
-    void magPhasorsCallback(mag_pl_detector::msg::MagneticPhasors3D::SharedPtr msg);
+	void powerlinePosesEstCallback(mag_pl_detector::msg::PowerlinePosesComputationResult::SharedPtr msg);
     void plDirCallback(geometry_msgs::msg::PoseStamped::SharedPtr msg);
     void odometryCallback();
+    void magPhasorsCallback(mag_pl_detector::msg::MagneticPhasors3D::SharedPtr msg);
 
-    void prepareOptimization(mag_pl_detector::msg::MagneticPhasors3D msg);
-    void runOptimization();
-    void publishPositions();
+    void projectVectors(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
+    void correctVectors(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
 
-    void measVecSet(mag_pl_detector::msg::MagneticPhasors3D msg);
-    void alphaSet(quat_t pl_dir_quat);
-    void projMagPosSet();
+    void singleCableLinearComputationMethod(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
+    void singleCableLinearBufferingComputationMethod(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
+    void twoCablesNLLSComputationMethod(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
+    void singleCableNLLSComputationMethod(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors);
 
-	void fetchStaticTransforms();
+    bool levenbergMarquardt(Eigen::VectorXd &x);
+    Eigen::MatrixXd J(const Eigen::VectorXd x);
+    Eigen::VectorXd B(const Eigen::VectorXd x);
+
+    bool levenbergMarquardtSingleCable(Eigen::VectorXd &x);
+    Eigen::MatrixXd JSingleCable(const Eigen::VectorXd x);
+    Eigen::VectorXd BSingleCable(const Eigen::VectorXd x);
+
+    vector_t P_D_Mja_p_[4];
+    Eigen::VectorXd P_v_;
+
+    void publishPoseEstimationResult();
+
+    void fetchStaticTransforms();
 
 };
 

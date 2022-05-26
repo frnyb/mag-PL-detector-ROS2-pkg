@@ -1,14 +1,52 @@
 sine_reconstruction_publisher:
-  ros__parameters:
-    bram_uio_number: 1
-    bram_size: 16384
+  sine_reconstruction_publisher:
+    ros__parameters:
+      bram_uio_number: 1
+      bram_size: 16384
 
 mag_sample_publisher:
-  ros__parameters:
-    bram_uio_number: 0
-    bram_size: 16384
+  mag_sample_publisher:
+    ros__parameters:
+      bram_uio_number: 0
+      bram_size: 16384
+      n_periods: 20
+      sine_reconstruction_method: 2
 
-/**:
+pl_dir_computer:
+  pl_dir_computer:
+    ros__parameters:
+      vector_parallel_dot_prod_thresh: 0.95
+      direction_computation_method: 3
+      direction_computation_buffer_size: 20
+
+pl_dir_estimator:
+  pl_dir_estimator:
+    ros__parameters:
+      kf_q: 0.001
+      kf_r: 0.999
+
+pl_positions_computer:
+  pl_positions_computer:
+    ros__parameters:
+      positions_computation_method: 2
+      buffer_size: 10
+      I: 120.
+      cable_distance_max: 25.
+      max_LMA_iterations: 100
+      max_weighting_iterations: 1000
+      lambda_first_step: 0.5
+      lambda_increment_factor: 1.01
+      lambda_decrement_factor: 0.9999
+      step_norm_success_threshold: 1e-2
+
+pl_positions_estimator:
+  pl_positions_estimator:
+    ros__parameters:
+      kf_q: 0.001
+      kf_r: 1.
+      distance_discard_threshold: 4.
+
+usb_cam:
   ros__parameters:
     video_device: "/dev/video0"
     framerate: 10.0
@@ -20,6 +58,8 @@ mag_sample_publisher:
     camera_name: "test_camera"
     camera_info_url: "package://usb_cam/config/camera_info.yaml"
 
+/**:
+  ros__parameters:
     world_frame_id: "world"
     drone_frame_id: "drone"
 
@@ -28,11 +68,6 @@ mag_sample_publisher:
     n_periods: 20
 
     max_n_samples: 200
-
-    vector_parallel_dot_prod_thresh: 0.95
-
-    kf_q: 0.999
-    kf_r: 0.001
 
     I_min: 100
     I_max: 1000

@@ -41,6 +41,11 @@ def generate_launch_description():
         executable="sine_reconstructor",
         parameters=[config]
     )
+    
+    image_decompress = Node(
+        package="iii_drone",
+        executable="image_decompress.py"
+    )
 
     pl_dir_computer = Node(
         package="mag_pl_detector",
@@ -54,11 +59,26 @@ def generate_launch_description():
         parameters=[config]
     )
 
+    pl_positions_computer = Node(
+        package="mag_pl_detector",
+        executable="pl_positions_computer",
+        parameters=[config]
+    )
+
+    pl_positions_estimator = Node(
+        package="mag_pl_detector",
+        executable="pl_positions_estimator",
+        parameters=[config]
+    )
+
     return LaunchDescription([
-        camera,
+        #camera,
+        image_decompress,
         physical_setup_launch,
-        mag_sample_publisher,
-        sine_reconstructor,
+        #mag_sample_publisher,
+        #sine_reconstructor,
         pl_dir_computer,
         pl_dir_estimator,
+        pl_positions_computer,
+        pl_positions_estimator,
     ])

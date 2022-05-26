@@ -20,6 +20,8 @@ typedef Eigen::Vector4d quatd_t;
 typedef Eigen::Vector3f vector_t;
 typedef Eigen::Vector3d vectord_t;
 
+typedef Eigen::Vector2f vector_2D_t;
+
 typedef struct {
 
     point_t p;
