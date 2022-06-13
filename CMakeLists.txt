@@ -95,45 +95,45 @@ rosidl_target_interfaces(sine_reconstruction_publisher
 )
 install(TARGETS sine_reconstruction_publisher DESTINATION lib/${PROJECT_NAME})
 
-add_executable(sample_frequency_controller
-  src/sample_frequency_controller.cpp
-  include/PL-Mag-Sensor/ip/SampleCntTargetController/drivers/SampleCntTargetController_v1_0/src/xsamplecnttargetcontroller.c
-  include/PL-Mag-Sensor/ip/SampleCntTargetController/drivers/SampleCntTargetController_v1_0/src/xsamplecnttargetcontroller_linux.c
-)
-ament_target_dependencies(sample_frequency_controller
-  rclcpp
-  std_msgs
-)
-rosidl_target_interfaces(sample_frequency_controller
-  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-)
-install(TARGETS sample_frequency_controller DESTINATION lib/${PROJECT_NAME})
+#add_executable(sample_frequency_controller
+#  src/sample_frequency_controller.cpp
+#  include/PL-Mag-Sensor/ip/SampleCntTargetController/drivers/SampleCntTargetController_v1_0/src/xsamplecnttargetcontroller.c
+#  include/PL-Mag-Sensor/ip/SampleCntTargetController/drivers/SampleCntTargetController_v1_0/src/xsamplecnttargetcontroller_linux.c
+#)
+#ament_target_dependencies(sample_frequency_controller
+#  rclcpp
+#  std_msgs
+#)
+#rosidl_target_interfaces(sample_frequency_controller
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+#)
+#install(TARGETS sample_frequency_controller DESTINATION lib/${PROJECT_NAME})
 
-add_executable(gain_controller
-  src/gain_controller.cpp
-  include/PL-Mag-Sensor/ip/CPU_GainController/drivers/ControlGain_v1_0/src/xcontrolgain.c
-  include/PL-Mag-Sensor/ip/CPU_GainController/drivers/ControlGain_v1_0/src/xcontrolgain_linux.c
-)
-ament_target_dependencies(gain_controller
-  rclcpp
-  std_msgs
-)
-rosidl_target_interfaces(gain_controller
-  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-)
-install(TARGETS gain_controller DESTINATION lib/${PROJECT_NAME})
+#add_executable(gain_controller
+#  src/gain_controller.cpp
+#  include/PL-Mag-Sensor/ip/CPU_GainController/drivers/ControlGain_v1_0/src/xcontrolgain.c
+#  include/PL-Mag-Sensor/ip/CPU_GainController/drivers/ControlGain_v1_0/src/xcontrolgain_linux.c
+#)
+#ament_target_dependencies(gain_controller
+#  rclcpp
+#  std_msgs
+#)
+#rosidl_target_interfaces(gain_controller
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+#)
+#install(TARGETS gain_controller DESTINATION lib/${PROJECT_NAME})
 
-add_executable(gain_computer
-  src/gain_computer.cpp
-)
-ament_target_dependencies(gain_computer
-  rclcpp
-  std_msgs
-)
-rosidl_target_interfaces(gain_computer
-  ${PROJECT_NAME} "rosidl_typesupport_cpp"
-)
-install(TARGETS gain_computer DESTINATION lib/${PROJECT_NAME})
+#add_executable(gain_computer
+#  src/gain_computer.cpp
+#)
+#ament_target_dependencies(gain_computer
+#  rclcpp
+#  std_msgs
+#)
+#rosidl_target_interfaces(gain_computer
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+#)
+#install(TARGETS gain_computer DESTINATION lib/${PROJECT_NAME})
 
 add_executable(sine_reconstructor
   src/sine_reconstructor.cpp
@@ -195,7 +195,7 @@ ament_target_dependencies(pl_positions_computer
   tf2
   tf2_ros
 )
-target_link_libraries(pl_positions_computer nlopt)
+#target_link_libraries(pl_positions_computer nlopt)
 rosidl_target_interfaces(pl_positions_computer
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
 )

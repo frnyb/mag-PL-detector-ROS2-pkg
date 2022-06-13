@@ -1,15 +1,15 @@
-sine_reconstruction_publisher:
+sine_reconstructor:
   sine_reconstruction_publisher:
     ros__parameters:
       bram_uio_number: 1
-      bram_size: 16384
+      bram_size: 4096
 
 mag_sample_publisher:
   mag_sample_publisher:
     ros__parameters:
       bram_uio_number: 0
-      bram_size: 16384
-      n_periods: 20
+      bram_size: 8192
+      n_periods: 10
       sine_reconstruction_method: 2
 
 gain_controller:
@@ -50,7 +50,7 @@ pl_positions_computer:
       positions_computation_method: 2
       buffer_size: 10
       I: 120.
-      cable_distance_max: 25.
+      cable_distance_max: 15.
       max_LMA_iterations: 100
       max_weighting_iterations: 1000
       lambda_first_step: 0.5

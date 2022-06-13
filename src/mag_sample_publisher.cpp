@@ -13,7 +13,6 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 	this->declare_parameter<int>("bram_uio_number", 0);
 	this->declare_parameter<int>("bram_size", 4*4096);
 	this->declare_parameter<int>("n_periods", 20);
-	this->declare_parameter<int>("sine_reconstruction_method", 0);
 
 	int bram_uio_number;
 	int bram_size;
@@ -22,7 +21,6 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 	this->get_parameter("bram_uio_number", bram_uio_number);
 	this->get_parameter("bram_size", bram_size);
 	this->get_parameter("n_periods", n_periods);
-	this->get_parameter("sine_reconstruction_method", sine_reconstruction_method_);
 
     RCLCPP_INFO(this->get_logger(), "Starting %s with parameters: ", node_name);
 	RCLCPP_INFO(this->get_logger(), "bram_uio_number: %d", bram_uio_number); 
@@ -35,17 +33,6 @@ MagSamplePublisherNode::MagSamplePublisherNode(const std::string & node_name, co
 
 	bram = new BRAM((unsigned int)bram_uio_number, (unsigned int)bram_size);
 	n_periods_ = n_periods;
-
-	if (sine_reconstruction_method_ == 2) {
-
-		(*bram)[1] = (uint32_t)n_periods_;
-		bram_data_offset_ = 3;
-
-	} else {
-
-		bram_data_offset_ = 1;
-
-	}
 
 	//while(!msf->Start(n_periods)) {
 
@@ -100,20 +87,8 @@ void MagSamplePublisherNode::fetchSamples() {
 
 	}
 
-	uint32_t n_samples;
-
-	if (sine_reconstruction_method_ == 2) {
-		
-		n_samples = (*bram)[2];
-
-	} else {
-
-		n_samples = N_SAMPLES;
-
-	}
-
-	for (int i = 0; i < n_samples; i++) {
-		MagSample sample(bram, bram_data_offset_+i*12);
+	for (int i = 0; i < N_SAMPLES; i++) {
+		MagSample sample(bram, 1+i*12);
 
 		samples.push_back(sample);
 	}
