@@ -68,7 +68,8 @@ def generate_launch_description():
     pl_positions_computer = Node(
         package="mag_pl_detector",
         executable="pl_positions_computer",
-        parameters=[config]
+        parameters=[config],
+        output="screen"
     )
 
     pl_positions_estimator = Node(
@@ -78,12 +79,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        camera,
-        #image_decompress,
+        #camera,
+        image_decompress,
         physical_setup_launch,
-        mag_sample_publisher,
+        #mag_sample_publisher,
         #sine_reconstructor,
-        sine_reconstruction_publisher,
+        #sine_reconstruction_publisher,
         pl_dir_computer,
         pl_dir_estimator,
         pl_positions_computer,

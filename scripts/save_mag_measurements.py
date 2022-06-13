@@ -20,7 +20,7 @@ class MagMeasurementSaver(Node):
 
         self.sub = self.create_subscription(
             MagMeasurements,
-            "/mag_measurements",
+            "/mag_sample_publisher/mag_measurements",
             self.callback,
             10
         )

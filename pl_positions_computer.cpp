@@ -255,10 +255,6 @@ void PowerlinePositionsComputerNode::projectVectors(std::vector<mag_pl_detector:
 
 void PowerlinePositionsComputerNode::correctVectors(std::vector<mag_pl_detector::msg::MagneticPhasor3D> phasors) {
 
-	//std::cout << to_string(phasors[0].amplitudes.x) << "\t" << to_string(phasors[1].amplitudes.x) << "\t"  << to_string(phasors[2].amplitudes.x) <<  "\t" << to_string(phasors[3].amplitudes.x) << "\n";
-	//std::cout << to_string(phasors[0].amplitudes.y) << "\t" << to_string(phasors[1].amplitudes.y) << "\t"  << to_string(phasors[2].amplitudes.y) <<  "\t" << to_string(phasors[3].amplitudes.y) << "\n";
-	//std::cout << to_string(phasors[0].amplitudes.z) << "\t" << to_string(phasors[1].amplitudes.z) << "\t"  << to_string(phasors[2].amplitudes.z) <<  "\t" << to_string(phasors[3].amplitudes.z) << "\n" << std::endl;
-
     int misaligned_votes[] = {0,0,0,0};
 
     for (int i = 0; i < 4; i++) {
@@ -269,7 +265,7 @@ void PowerlinePositionsComputerNode::correctVectors(std::vector<mag_pl_detector:
             phasors[i].amplitudes.z
         );
 
-        if (i == 3) {
+        if (i == 2) {
             D_vj = -D_vj;
         }
 
@@ -347,12 +343,6 @@ void PowerlinePositionsComputerNode::correctVectors(std::vector<mag_pl_detector:
 
         D_vj_vecs_[misaligned_index] = best_R * D_vj_vecs_[misaligned_index];
     }
-
-	//std::cout << to_string(D_vj_vecs_[0](0)) << "\t" << to_string(D_vj_vecs_[1](0)) << "\t"  << to_string(D_vj_vecs_[2](0)) <<  "\t" << to_string(D_vj_vecs_[3](0)) << "\n";
-	//std::cout << to_string(D_vj_vecs_[0](1)) << "\t" << to_string(D_vj_vecs_[1](1)) << "\t"  << to_string(D_vj_vecs_[2](1)) <<  "\t" << to_string(D_vj_vecs_[3](1)) << "\n";
-	//std::cout << to_string(D_vj_vecs_[0](2)) << "\t" << to_string(D_vj_vecs_[1](2)) << "\t"  << to_string(D_vj_vecs_[2](2)) <<  "\t" << to_string(D_vj_vecs_[3](2)) << "\n" << std::endl << std::endl;
-
-
 
 
 }
@@ -479,8 +469,10 @@ void PowerlinePositionsComputerNode::singleCableLinearBufferingComputationMethod
         }
     }
 
-    Eigen::MatrixXf A(D_vi.size()+1, 3);
-    Eigen::VectorXf b(D_vi.size()+1);
+    //Eigen::MatrixXf A(D_vi.size()+1, 3);
+    //Eigen::VectorXf b(D_vi.size()+1);
+    Eigen::MatrixXf A(D_vi.size(), 3);
+    Eigen::VectorXf b(D_vi.size());
 
     for (int i = 0; i < D_vi.size(); i++) {
 
@@ -498,9 +490,9 @@ void PowerlinePositionsComputerNode::singleCableLinearBufferingComputationMethod
 
     }
 
-    A(D_vi.size(), 0) = pl_unit_x_(0);
-    A(D_vi.size(), 1) = pl_unit_x_(1);
-    A(D_vi.size(), 2) = pl_unit_x_(2);
+    //A(D_vi.size(), 0) = pl_unit_x_(0);
+    //A(D_vi.size(), 1) = pl_unit_x_(1);
+    //A(D_vi.size(), 2) = pl_unit_x_(2);
 
 	Eigen::Vector3f x = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
 

@@ -50,7 +50,7 @@ pl_positions_computer:
       positions_computation_method: 2
       buffer_size: 10
       I: 120.
-      cable_distance_max: 15.
+      cable_distance_max: 25.
       max_LMA_iterations: 100
       max_weighting_iterations: 1000
       lambda_first_step: 0.5
@@ -61,7 +61,7 @@ pl_positions_computer:
 pl_positions_estimator:
   pl_positions_estimator:
     ros__parameters:
-      kf_q: 0.001
+      kf_q: 1.
       kf_r: 1.
       distance_discard_threshold: 4.
 
