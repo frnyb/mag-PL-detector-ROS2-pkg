@@ -269,7 +269,7 @@ void PowerlinePositionsComputerNode::correctVectors(std::vector<mag_pl_detector:
             phasors[i].amplitudes.z
         );
 
-        if (i == 3) {
+        if (i == 2) {
             D_vj = -D_vj;
         }
 

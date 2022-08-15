@@ -10,25 +10,25 @@ def generate_launch_description():
     tf_drone_to_mag0 = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["-0.1925", "-0.1925", "0","0.7854", "0", "0",  "drone", "mag0"]
+        arguments=["0.17", "-0.17", "0","2.3562", "0", "0",  "drone", "mag0"]
     )
 
     tf_drone_to_mag1 = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["0.1925", "-0.1925", "0", "2.3562", "0", "0",  "drone", "mag1"]
+        arguments=["0.17", "0.17", "0", "-2.3562", "0", "0",  "drone", "mag1"]
     )
 
     tf_drone_to_mag2 = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["0.1925", "0.1925", "0", "-2.3562", "0", "0", "drone", "mag2"]
+        arguments=["-0.17", "0.17", "0", "-0.7854", "0", "0", "drone", "mag2"]
     )
 
     tf_drone_to_mag3 = Node(
         package="tf2_ros",
         executable="static_transform_publisher",
-        arguments=["-0.1925", "0.1925", "0", "-0.7854", "0", "0",  "drone", "mag3"]
+        arguments=["-0.17", "-0.17", "0", "0.7854", "0", "0",  "drone", "mag3"]
     )
 
     world_to_drone = Node(

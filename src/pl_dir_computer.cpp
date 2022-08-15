@@ -522,7 +522,7 @@ void PowerlineDirectionComputerNode::correctVectors() {
         vector_t D_vj = mag_ampl_vecs_[i];
 		vector_t norm_D_vj = norm_mag_ampl_vecs_[i];
 
-        if (i == 3) {
+        if (i == 2) {
             D_vj = -D_vj;
 			norm_D_vj = -norm_D_vj;
         }
